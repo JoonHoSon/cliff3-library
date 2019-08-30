@@ -2,8 +2,8 @@ package net.cliff3.maven.common.util
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
+import kotlin.test.assertTrue
 
 /**
  * NumberUtilTest

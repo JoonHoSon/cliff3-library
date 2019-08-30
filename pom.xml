@@ -102,6 +102,12 @@
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <includes>
+                            <include>packages.md</include>
+                        </includes>
+                        <jdkVersion>8</jdkVersion>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

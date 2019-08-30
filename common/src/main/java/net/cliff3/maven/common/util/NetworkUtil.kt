@@ -25,6 +25,13 @@ class NetworkUtil {
 
         private val IP_REGEXP = Pattern.compile(IP_FULL_PATTERN)
 
+        /**
+         * 대상 아이피 주소 문자열의 유효성 여부를 확인한다.
+         *
+         * @param ip 아이피 주소 문자열
+         *
+         * @return 유효성 여부
+         */
         fun checkValidIpV4Address(ip: String?): Boolean {
             logger.debug("target ip : {}", ip)
 
