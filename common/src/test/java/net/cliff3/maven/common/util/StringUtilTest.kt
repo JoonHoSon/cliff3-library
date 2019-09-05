@@ -54,4 +54,54 @@ class StringUtilTest {
         assertEquals("123,457.23", StringUtil.currencyFormat(currency2, true), "통화 변환 실패 [$currency2]")
         assertEquals("123,457", StringUtil.currencyFormat(currency2, false), "통화 변환 실패 [$currency2]")
     }
+
+    @Test
+    fun hexTest() {
+        val value1: String = "한글"
+        val value2: String = "cliff3.net"
+
+        assertEquals("D55CAE00", StringUtil.stringToHex(value1, toUpperCase = true), "문자열 16진수 변환 실패 [$value1]")
+        assertEquals("d55cae00", StringUtil.stringToHex(value1), "문자열 16진수 변환 실패 [$value1]")
+        assertEquals("0XD55CAE00",
+                     StringUtil.stringToHex(value1, hasPrefix = true, toUpperCase = true),
+                     "문자열 16진수 변환 실패 [$value1]")
+        assertEquals("636C696666332E6E6574",
+                     StringUtil.stringToHex(value2, toUpperCase = true),
+                     "문자열 16진수 변환 실패 [$value2]")
+        assertEquals("0x636c696666332e6e6574",
+                     StringUtil.stringToHex(value2, hasPrefix = true),
+                     "문자열 16진수 변환 실패 [$value2]")
+    }
+
+    @Test
+    fun randomStringTest() {
+        assertTrue(StringUtil.makeRandomString(10).length == 10, "무작위 문자열 출력 실패")
+    }
+
+    @Test
+    fun checkDefaultValueTest() {
+        val targets: Array<String> = arrayOf("abc", "bcd", "Efg")
+        val compare: String = "efg"
+        val default: String = "defaultString"
+
+        assertEquals(default,
+                     StringUtil.checkValueInDefaultList(targets = targets, compare = compare, default = default),
+                     "기본값 확인 실패 [대상 : $targets.forEach(System.out::println), 비교 : $compare]")
+        assertEquals(compare.capitalize(),
+                     StringUtil.checkValueInDefaultList(targets = targets,
+                                                        compare = compare,
+                                                        default = default,
+                                                        isCaseSensitive = false),
+                     "기본값 확인 실패 [대상 : $targets.forEach(System.out::println), 비교 : $compare]")
+    }
+
+    @Test
+    fun maskingTest() {
+        val target: String = "abcdefg"
+        val result1: String = "abc****"
+        val result2: String = "*******"
+
+        assertEquals(result1, StringUtil.masking(target, 3), "마스킹 처리 실패 [$target]")
+        assertEquals(result2, StringUtil.masking(target, 100), "마스킹 처리 실패 [$target]")
+    }
 }

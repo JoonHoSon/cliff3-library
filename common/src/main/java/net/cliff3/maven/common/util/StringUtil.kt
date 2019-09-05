@@ -3,6 +3,7 @@ package net.cliff3.maven.common.util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.text.DecimalFormat
+import java.util.*
 import java.util.regex.Pattern
 
 /**
@@ -181,6 +182,105 @@ class StringUtil {
                     }
                 } catch (e: NumberFormatException) {
                     ""
+                }
+            }
+
+            return ""
+        }
+
+        /**
+         * 대상 문자열을 16진수(Hex) 형태로 변환하여 반환한다.
+         *
+         * @param target 대상 문자열
+         * @param hasPrefix **0x** 접두어 포함 여부
+         * @param toUpperCase 대문자로 출력 여부
+         *
+         * @return 16진수로 변환된 문자열
+         */
+        fun stringToHex(target: String?, hasPrefix: Boolean = false, toUpperCase: Boolean = false): String {
+            logger.debug("target : $target")
+
+            target?.apply {
+                val builder = StringBuilder()
+                val length: Int = this.length
+
+                for (i in 0 until length) {
+                    builder.append(String.format("%02x", this[i].toInt()))
+                }
+
+                return if (hasPrefix) {
+                    if (!toUpperCase) "0x$builder" else "0x$builder".toUpperCase()
+                } else {
+                    if (!toUpperCase) builder.toString() else builder.toString().toUpperCase()
+                }
+            }
+
+            return ""
+        }
+
+        /**
+         * 지정된 길이 만큼의 무작위 문자열을 생성하여 반환
+         *
+         * @param length 문자열 길이
+         * @return 생성된 임의의 문자열
+         */
+        fun makeRandomString(length: Int): String {
+            val random = Random()
+            val sourceLength: Int = randomSource.size
+            var count = 0
+            val builder = StringBuilder()
+
+            while (count < length) {
+                builder.append(randomSource[random.nextInt(sourceLength)])
+
+                count++
+            }
+
+            logger.debug("random string : $builder")
+
+            return builder.toString()
+        }
+
+        /**
+         * 기준 문자열 배열에서 두 번째 인자로 전달된 값과 비교하여 일치할 경우 반환.
+         * 일치하지 않을 경우 지정된 기본 문자열을 반환
+         *
+         * @param targets 기준 문자열 배열
+         * @param compare 비교 문자열
+         * @param default 기본 문자열
+         *
+         * @param isCaseSensitive 대소문자 무시 여부
+         */
+        fun checkValueInDefaultList(targets: Array<String>,
+                                    compare: String,
+                                    default: String,
+                                    isCaseSensitive: Boolean = true): String {
+            for (d: String in targets) {
+                val tempTarget: String = if (isCaseSensitive) d else d.toLowerCase()
+                val tempCompare: String = if (isCaseSensitive) compare else compare.toLowerCase()
+
+                if (tempTarget == tempCompare) {
+                    return d
+                }
+            }
+
+            return default
+        }
+
+        /**
+         * 대상 문자열에서 지정한 길이를 제외한 나머지를 마스킹 처리한다. 만약 문자열 길이보다 지정한 길이가 클 경우 전체를 마스킹 처리한다.
+         *
+         * @param target 대상 문자열
+         * @param displayStringCount 출력될 원본 문자열 개수
+         * @param mask 마스킹 문자열
+         *
+         * @return 마스킹 처리된 문자열
+         */
+        fun masking(target: String?, displayStringCount: Int, mask: String = "*"): String {
+            target?.apply {
+                return when {
+                    this.length < displayStringCount -> mask.repeat(this.length)
+                    else -> this.substring(0, displayStringCount) + mask.repeat(this.length - displayStringCount)
                 }
             }
 
