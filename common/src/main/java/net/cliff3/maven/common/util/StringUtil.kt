@@ -110,14 +110,14 @@ class StringUtil {
          *
          * 소수점 없음
          */
-        private val currencyFormat: DecimalFormat = DecimalFormat("#,##0")
+        private val currencyFormatter: DecimalFormat = DecimalFormat("#,##0")
 
         /**
          * 통화 표시
          *
          * 소수점 하위 두 자리
          */
-        private val currencyFormatWithDecimalPoint = DecimalFormat("#,##0.00")
+        private val currencyFormatterWithDecimalPoint = DecimalFormat("#,##0.00")
 
         /**
          * 이메일 문자열의 유효성 검사 결과를 반환한다.
@@ -157,6 +157,34 @@ class StringUtil {
             logger.error("대상 문자열 없음")
 
             return false
+        }
+
+        /**
+         * 대상 문자열을 통화 형식으로 변환하여 반환한다.
+         *
+         * 빈 문자열 혹은 [NumberFormatException]일 경우 빈 문자열 반환
+         *
+         * @param target 대상 문자열
+         * @param showDecimalPoint 소수점 하위 2자리 표시 여부. [currencyFormatterWithDecimalPoint] 참고.
+         *
+         * @return 세 자리마다 쉼표가 찍히는 통화 형식의 문자열
+         */
+        fun currencyFormat(target: String?, showDecimalPoint: Boolean = false): String {
+            logger.debug("currencyFormat target : $target")
+
+            target?.apply {
+                return try {
+                    if (showDecimalPoint) {
+                        currencyFormatterWithDecimalPoint.format(this.toDouble())
+                    } else {
+                        currencyFormatter.format(this.toDouble())
+                    }
+                } catch (e: NumberFormatException) {
+                    ""
+                }
+            }
+
+            return ""
         }
     }
 }
