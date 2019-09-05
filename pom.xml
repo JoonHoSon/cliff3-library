@@ -107,6 +107,14 @@
                             <include>packages.md</include>
                         </includes>
                         <jdkVersion>8</jdkVersion>
+                        <perPackageOptions>
+                            <packageOptions>
+                                <prefix>net.cliff3</prefix>
+                                <skipDeprecated>false</skipDeprecated>
+                                <reportUndocumented>true</reportUndocumented>
+                                <includeNonPublic>true</includeNonPublic>
+                            </packageOptions>
+                        </perPackageOptions>
                     </configuration>
                 </plugin>
                 <plugin>
