@@ -3,6 +3,7 @@ package net.cliff3.maven.common.util
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.text.DecimalFormat
+import java.util.regex.Pattern
 
 /**
  * 문자열 관련 유틸리티 클래스
@@ -75,9 +76,34 @@ class StringUtil {
         private const val emailExpression: String = "^[\\w\\-]+(\\.[\\w\\-]+)*@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}$"
 
         /**
-         * URL 정규식
+         * 이메일 정규식 [Pattern]. 대소문자 구분 없음.
          */
-        private const val urlExpression: String = "(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\n\\-=?\\+%/\\.\\w가-힣ㄱ-ㅎㅏ]+)?"
+        private val emailPatternInCaseSensitive: Pattern = Pattern.compile(emailExpression, Pattern.CASE_INSENSITIVE)
+
+        /**
+         * 이메일 정규식 [Pattern]. 대소문자 구분
+         */
+        private val emailPatternCaseSensitive: Pattern = Pattern.compile(emailExpression)
+
+        /**
+         * URL 정규식. Protocol(http/https)는 옵션임.
+         */
+        private const val urlExpression: String = "(http(s)?://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\n\\-=?\\+%/\\.\\w가-힣ㄱ-ㅎㅏ]+)?"
+
+        /**
+         * URL 정규식. Protocol(http/https)를 포함한 전체 검사.
+         */
+        private const val urlExpressionWithProtocol: String = "(http(s)?://)[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\n\\-=?\\+%/\\.\\w가-힣ㄱ-ㅎㅏ]+)?"
+
+        /**
+         * URL 정규식([urlExpression]) [Pattern]
+         */
+        private val urlPattern: Pattern = Pattern.compile(urlExpression)
+
+        /**
+         * URL 정규식([urlExpressionWithProtocol]) [Pattern]
+         */
+        private val urlPatternWithProtocol: Pattern = Pattern.compile(urlExpressionWithProtocol)
 
         /**
          * 통화 표시
@@ -92,5 +118,45 @@ class StringUtil {
          * 소수점 하위 두 자리
          */
         private val currencyFormatWithDecimalPoint = DecimalFormat("#,##0.00")
+
+        /**
+         * 이메일 문자열의 유효성 검사 결과를 반환한다.
+         *
+         * @param target 대상 문자열
+         * @param isCaseSensitive 대소문자 구분 여부
+         *
+         * @return 유효성 검사 결과
+         */
+        fun isValidEmail(target: String?, isCaseSensitive: Boolean = true): Boolean {
+            logger.debug("isValidEmail target : $target")
+
+            target?.apply {
+                return if (isCaseSensitive) emailPatternCaseSensitive.matcher(this).matches() else emailPatternInCaseSensitive.matcher(
+                        this).matches()
+            }
+
+            logger.error("대상 문자열 없음")
+
+            return false
+        }
+
+        /**
+         * URL 문자열의 유효성 검사 결과를 반환한다.
+         *
+         * @param target 대상 문자열
+         *
+         * @return 유효성 검사 결과
+         */
+        fun isValidURL(target: String?, withProtocol: Boolean = true): Boolean {
+            logger.debug("isValidURL target : $target")
+
+            target?.apply {
+                return if (withProtocol) urlPatternWithProtocol.matcher(this).matches() else urlPattern.matcher(this).matches()
+            }
+
+            logger.error("대상 문자열 없음")
+
+            return false
+        }
     }
 }
