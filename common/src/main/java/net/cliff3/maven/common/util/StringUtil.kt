@@ -128,6 +128,7 @@ class StringUtil {
          *
          * @return 유효성 검사 결과
          */
+        @JvmStatic
         fun isValidEmail(target: String?, isCaseSensitive: Boolean = true): Boolean {
             logger.debug("isValidEmail target : $target")
 
@@ -148,6 +149,7 @@ class StringUtil {
          *
          * @return 유효성 검사 결과
          */
+        @JvmStatic
         fun isValidURL(target: String?, withProtocol: Boolean = true): Boolean {
             logger.debug("isValidURL target : $target")
 
@@ -170,6 +172,7 @@ class StringUtil {
          *
          * @return 세 자리마다 쉼표가 찍히는 통화 형식의 문자열
          */
+        @JvmStatic
         fun currencyFormat(target: String?, showDecimalPoint: Boolean = false): String {
             logger.debug("currencyFormat target : $target")
 
@@ -197,6 +200,7 @@ class StringUtil {
          *
          * @return 16진수로 변환된 문자열
          */
+        @JvmStatic
         fun stringToHex(target: String?, hasPrefix: Boolean = false, toUpperCase: Boolean = false): String {
             logger.debug("target : $target")
 
@@ -224,6 +228,7 @@ class StringUtil {
          * @param length 문자열 길이
          * @return 생성된 임의의 문자열
          */
+        @JvmStatic
         fun makeRandomString(length: Int): String {
             val random = Random()
             val sourceLength: Int = randomSource.size
@@ -251,6 +256,7 @@ class StringUtil {
          *
          * @param isCaseSensitive 대소문자 무시 여부
          */
+        @JvmStatic
         fun checkValueInDefaultList(targets: Array<String>,
                                     compare: String,
                                     default: String,
@@ -276,6 +282,7 @@ class StringUtil {
          *
          * @return 마스킹 처리된 문자열
          */
+        @JvmStatic
         fun masking(target: String?, displayStringCount: Int, mask: String = "*"): String {
             target?.apply {
                 return when {

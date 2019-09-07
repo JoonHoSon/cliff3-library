@@ -20,6 +20,7 @@ class NumberUtil {
          * @param max 범위 최대값
          * @return 범위내의 무작위 숫자
          */
+        @JvmStatic
         fun getRandomInteger(min: Int, max: Int): Int {
             logger.debug("min : {}, max : {}", min, max);
 

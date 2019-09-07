@@ -32,6 +32,7 @@ class NetworkUtil {
          *
          * @return 유효성 여부
          */
+        @JvmStatic
         fun checkValidIpV4Address(ip: String?): Boolean {
             logger.debug("target ip : {}", ip)
 
