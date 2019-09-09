@@ -43,14 +43,20 @@ class CookieUtil {
                       domain: String?,
                       path: String = "/",
                       maxAge: Int?): Boolean {
+            logger.debug("cookieName : $name")
+            logger.debug("cookieValue : $value")
+            logger.debug("domain : $domain")
+            logger.debug("path : $path")
+            logger.debug("maxAge : $maxAge")
+
             var result: Boolean = true
 
             try {
                 val cookie: Cookie = Cookie(name, Base64.encodeBase64URLSafeString(value.toByteArray()))
 
                 domain?.let {
-                    logger.debug("cookie domain : $domain")
-                    cookie.domain = domain
+                    logger.debug("cookie domain : $it")
+                    cookie.domain = it
                 }
 
                 cookie.path = path
@@ -113,13 +119,13 @@ class CookieUtil {
             val cookie: Cookie = Cookie(name, value)
 
             domain?.let {
-                cookie.domain = domain
+                cookie.domain = it
             }
 
             cookie.path = path
 
             maxAge?.let {
-                cookie.maxAge = maxAge
+                cookie.maxAge = it
             }
 
             response.addCookie(cookie)
@@ -136,12 +142,29 @@ class CookieUtil {
                                    domain = domain)
         }
 
+        /**
+         * [addNormalCookie] 참고
+         */
+        @JvmStatic
+        fun addNormalCookie(response: HttpServletResponse, name: String, value: String) {
+            return addNormalCookie(response = response, name = name, value = value, domain = null, maxAge = -1)
+        }
+
+        /**
+         * 쿠키 값을 반환한다.
+         *
+         * @param request [HttpServletRequest]
+         * @param name 쿠키 이름
+         * @param isDecoding [Base64.decodeBase64] 처리 여부
+         *
+         * @return 쿠키 값
+         */
         @JvmStatic
         fun getCookie(request: HttpServletRequest, name: String, isDecoding: Boolean = false): String {
-            val cookies: Array<Cookie> = request.cookies
+            val cookies: Array<Cookie>? = request.cookies
             var value: String = ""
 
-            cookies.forEach loop@{
+            cookies?.forEach loop@{
                 if (it.name == name) {
                     try {
                         value = if (isDecoding) {
@@ -159,5 +182,36 @@ class CookieUtil {
 
             return value
         }
+
+        /**
+         * [getCookie] 참고
+         */
+        @JvmStatic
+        fun getCookie(request: HttpServletRequest, name: String): String {
+            return getCookie(request = request, name = name, isDecoding = false)
+        }
+
+        /**
+         * 지정된 쿠키를 제거한다. 등록한 쿠키와 [domain] 및 [path]가 일치할 경우에만 삭제된다.
+         *
+         * @param response [HttpServletResponse]
+         * @param name 쿠키 이름
+         * @param domain 도메인
+         * @param path 쿠키 경로
+         */
+        fun removeCookie(response: HttpServletResponse, name: String, domain: String?, path: String = "/") {
+            val cookie: Cookie = Cookie(name, "")
+
+            cookie.maxAge = 0
+            cookie.path = path
+
+            domain?.let {
+                cookie.domain = it
+            }
+
+            response.addCookie(cookie)
+        }
+
+        // TODO(joonho): 2019-09-09 encrypt cookie 작성 할 것.
     }
 }
