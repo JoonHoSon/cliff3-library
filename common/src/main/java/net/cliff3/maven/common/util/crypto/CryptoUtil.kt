@@ -1,15 +1,14 @@
 package net.cliff3.maven.common.util.crypto
 
 import net.cliff3.maven.common.util.CryptoException
-import org.apache.commons.codec.binary.Base64
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
-import java.security.AlgorithmParameters
-import java.security.MessageDigest
-import java.security.SecureRandom
-import java.security.spec.KeySpec
+import java.security.*
+import java.security.spec.*
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
@@ -135,7 +134,7 @@ class CryptoUtil {
         private const val KEY_256: Int = 256
 
         /**
-         * SHA256 hash 처리. 최종 반환 문자열은 [Base64.encodeBase64URLSafeString] 처리되어 반환한다.
+         * SHA256 hash 처리.
          * [java.io.UnsupportedEncodingException] 혹은 [java.security.NoSuchAlgorithmException] 예외가 발생할 수 있으며
          * 모든 예외는 [CryptoException]으로 변환하여 예외를 전달한다.
          *
@@ -143,12 +142,12 @@ class CryptoUtil {
          * @param salt salt
          * @param repeatCount 반복 횟수
          *
-         * @return SHA256 hash 처리 및 결과를 [Base64.encodeBase64URLSafeString]로 변환한 문자열
+         * @return SHA256 hash 처리 결과
          * @throws CryptoException 암호화 처리 오류 발생
          */
         @JvmStatic
         @Throws(CryptoException::class, IllegalArgumentException::class)
-        fun makeSHA256Hash(target: String, salt: String?, repeatCount: Int = DEFAULT_REPEAT_COUNT): String {
+        fun makeSHA256Hash(target: String, salt: String?, repeatCount: Int = DEFAULT_REPEAT_COUNT): ByteArray {
             require(!target.isBlank()) { "SHA256 hashing 오류 : 대상 문자열 없음" }
 
             logger.debug("암호화 대상 문자열 : $target")
@@ -178,7 +177,7 @@ class CryptoUtil {
                     }
                 }
 
-                return Base64.encodeBase64URLSafeString(convertedTarget)
+                return convertedTarget
             } catch (e: Exception) {
                 logger.error("암호화 오류", e)
 
@@ -191,7 +190,7 @@ class CryptoUtil {
          */
         @JvmStatic
         @Throws(CryptoException::class, IllegalArgumentException::class)
-        fun makeSHA256Hash(target: String, salt: String?): String {
+        fun makeSHA256Hash(target: String, salt: String?): ByteArray {
             return makeSHA256Hash(target, salt, DEFAULT_REPEAT_COUNT)
         }
 
@@ -200,7 +199,7 @@ class CryptoUtil {
          */
         @JvmStatic
         @Throws(CryptoException::class, IllegalArgumentException::class)
-        fun makeSHA256Hash(target: String): String {
+        fun makeSHA256Hash(target: String): ByteArray {
             return makeSHA256Hash(target, null, DEFAULT_REPEAT_COUNT)
         }
 
@@ -263,7 +262,7 @@ class CryptoUtil {
          */
         @JvmStatic
         @Throws(CryptoException::class)
-        fun decryptAES128(target: String, secret: String, iv: ByteArray, salt: ByteArray): String {
+        fun decryptAES128(target: ByteArray, secret: String, iv: ByteArray, salt: ByteArray): ByteArray {
             return decryptAES(target, secret, 128, iv, salt)
         }
 
@@ -272,8 +271,38 @@ class CryptoUtil {
          */
         @JvmStatic
         @Throws(CryptoException::class)
-        fun decryptAES256(target: String, secret: String, iv: ByteArray, salt: ByteArray): String {
+        fun decryptAES256(target: ByteArray, secret: String, iv: ByteArray, salt: ByteArray): ByteArray {
             return decryptAES(target, secret, 256, iv, salt)
+        }
+
+        fun encryptDataByRSA(target: ByteArray, toStringKey: Boolean = true): RSAKeySet {
+            val keySize: Int = 2048
+            val cipher: Cipher = Cipher.getInstance(Transformation.RSA_ECB_PKCS1PADDING.value)
+            val random: SecureRandom = SecureRandom()
+            val generator: KeyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM_RSA)
+
+            generator.initialize(keySize, random)
+
+            val keyPair: KeyPair = generator.generateKeyPair()
+            val publicKey: Key = keyPair.public
+            val privateKey: Key = keyPair.private
+
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey)
+
+            val encrypted: ByteArray = cipher.doFinal(target)
+            val result: RSAKeySet = RSAKeySet(publicKey = publicKey, privateKey = privateKey, toStringKey = toStringKey)
+
+            result.encryptedValue = encrypted
+
+            return result
+        }
+
+        fun decryptDataByRSA(target: ByteArray, keySet: RSAKeySet): ByteArray {
+            val cipher: Cipher = Cipher.getInstance(Transformation.RSA_ECB_PKCS1PADDING.value)
+
+            cipher.init(Cipher.DECRYPT_MODE, keySet.privateKey)
+
+            return cipher.doFinal(target)
         }
 
         //--------------------------------------------------------------------------------------------------------------
@@ -301,6 +330,9 @@ class CryptoUtil {
          */
         @Throws(CryptoException::class)
         private fun makeAESEncrypt(target: String, secret: String, keySize: Int, salt: ByteArray): AESCrypto {
+            require(StringUtils.isNotBlank(target)) { throw IllegalArgumentException("암호화 대상 문자열 없음") }
+            require(StringUtils.isNotBlank(secret)) { throw IllegalArgumentException("암호화 키 없음") }
+
             logger.debug("암호화 대상 문자열 : $target")
 
             try {
@@ -325,8 +357,7 @@ class CryptoUtil {
         }
 
         /**
-         * AES 복호화 처리. 인자로 전달되는 [secret], [iv] 및 [salt]를 이용하여 대상 문자열을 복호화 한다. 단, 복호화 대상 문자열은 반드시
-         * [Base64.encodeBase64URLSafeString]로 처리된 문자열이어야만 한다.
+         * AES 복호화 처리. 인자로 전달되는 [secret], [iv] 및 [salt]를 이용하여 대상 문자열을 복호화 한다.
          *
          * @param target 암호화된 문자열
          * @param secret 암호화 키
@@ -345,9 +376,15 @@ class CryptoUtil {
          * @see javax.crypto.IllegalBlockSizeException
          */
         @Throws(CryptoException::class)
-        private fun decryptAES(target: String, secret: String, keySize: Int, iv: ByteArray, salt: ByteArray): String {
+        private fun decryptAES(target: ByteArray,
+                               secret: String,
+                               keySize: Int,
+                               iv: ByteArray,
+                               salt: ByteArray): ByteArray {
+            require(target.isNotEmpty()) { throw IllegalArgumentException("복호화 대상 없음") }
+            require(StringUtils.isNotBlank(secret)) { throw IllegalArgumentException("암호화 키 없음") }
+
             try {
-                val encryptedTarget: ByteArray = Base64.decodeBase64(target)
                 val factory: SecretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
                 val spec: PBEKeySpec = PBEKeySpec(secret.toCharArray(), salt, DEFAULT_REPEAT_COUNT, keySize)
                 val secretKey: SecretKey = factory.generateSecret(spec)
@@ -356,9 +393,7 @@ class CryptoUtil {
 
                 cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(iv))
 
-                val decryptedBytes: ByteArray = cipher.doFinal(encryptedTarget)
-
-                return String(decryptedBytes, UTF_8)
+                return cipher.doFinal(target)
             } catch (e: Exception) {
                 logger.error("AES 복호화 실패", e)
 
@@ -378,6 +413,33 @@ class CryptoUtil {
             random.nextBytes(bytes)
 
             return bytes
+        }
+
+        /**
+         * 공개키 및 비밀키를 반환한다.
+         *
+         * @param 암호화된 키
+         * @param type [LoadKeyType]
+         *
+         * @return 공개/비밀키
+         */
+        @Throws(IOException::class, NoSuchAlgorithmException::class, InvalidKeySpecException::class)
+        private fun loadKey(key: String, type: LoadKeyType): Key {
+            require(key.isNotBlank()) { throw IllegalArgumentException("암호화 키가 없음") }
+
+            val decodedKey: ByteArray = key.toByteArray()
+            val factory: KeyFactory = KeyFactory.getInstance(ALGORITHM_RSA)
+            val keySpec: EncodedKeySpec
+
+            return if (LoadKeyType.PUBLIC_KEY == type) {
+                keySpec = X509EncodedKeySpec(decodedKey)
+
+                factory.generatePublic(keySpec)
+            } else {
+                keySpec = PKCS8EncodedKeySpec(decodedKey)
+
+                factory.generatePrivate(keySpec)
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 /**
- * CryotUtilTest
+ * CryptoUtilTest
  *
  * @author JoonHo Son
  * @version 1.0.0 2019-09-09 최초 작성
@@ -25,7 +25,7 @@ public class CryptoUtilTest {
 
     @Test
     public void sha256Test() throws CryptoException {
-        final String result = CryptoUtil.makeSHA256Hash("123");
+        final String result = new String(CryptoUtil.makeSHA256Hash("123"));
 
         logger.debug("hash result : {}", result);
 
@@ -34,7 +34,7 @@ public class CryptoUtilTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void sha256ExceptionTest() throws CryptoException {
-        final String result = CryptoUtil.makeSHA256Hash("");
+        final String result = new String(CryptoUtil.makeSHA256Hash(""));
 
         assertNotNull(result, "SHA256 hashing 실패");
     }
@@ -45,10 +45,10 @@ public class CryptoUtilTest {
 
         assertNotNull(result, "암호화 결과 반환 실패");
 
-        String decryptResult = CryptoUtil.decryptAES128(result.getEncryptedString(),
-                                                        password,
-                                                        result.getIv(),
-                                                        result.getSalt());
+        String decryptResult = new String(CryptoUtil.decryptAES128(result.getEncrypted(),
+                                                                   password,
+                                                                   result.getIv(),
+                                                                   result.getSalt()));
 
         assertNotNull(decryptResult, "복호화 실패");
         assertEquals(decryptResult, source, "복호화 결과 불일치");
@@ -59,10 +59,10 @@ public class CryptoUtilTest {
 
         assertNotNull(result, "암호화 결과 반환 실패(사용자 정의 salt)");
 
-        decryptResult = CryptoUtil.decryptAES128(result.getEncryptedString(),
-                                                 password,
-                                                 result.getIv(),
-                                                 salt.getBytes());
+        decryptResult = new String(CryptoUtil.decryptAES128(result.getEncrypted(),
+                                                            password,
+                                                            result.getIv(),
+                                                            salt.getBytes()));
 
         assertNotNull(decryptResult, "복호화 실패(사용자 정의 salt)");
         assertEquals(decryptResult, source, "복호화 결과 불일치(사용자 정의 salt)");
@@ -76,10 +76,10 @@ public class CryptoUtilTest {
 
         assertNotNull(result, "암호화 결과 반환 실패");
 
-        String decryptResult = CryptoUtil.decryptAES256(result.getEncryptedString(),
-                                                        password,
-                                                        result.getIv(),
-                                                        result.getSalt());
+        String decryptResult = new String(CryptoUtil.decryptAES256(result.getEncrypted(),
+                                                                   password,
+                                                                   result.getIv(),
+                                                                   result.getSalt()));
 
         assertNotNull(decryptResult, "복호화 실패");
         assertEquals(decryptResult, source, "복호화 결과 불일치");
@@ -90,10 +90,10 @@ public class CryptoUtilTest {
 
         assertNotNull(result, "암호화 결과 반환 실패(사용자 정의 salt)");
 
-        decryptResult = CryptoUtil.decryptAES256(result.getEncryptedString(),
-                                                 password,
-                                                 result.getIv(),
-                                                 salt.getBytes());
+        decryptResult = new String(CryptoUtil.decryptAES256(result.getEncrypted(),
+                                                            password,
+                                                            result.getIv(),
+                                                            salt.getBytes()));
 
         assertNotNull(decryptResult, "복호화 실패(사용자 정의 salt)");
         assertEquals(decryptResult, source, "복호화 결과 불일치(사용자 정의 salt)");
@@ -104,10 +104,10 @@ public class CryptoUtilTest {
 
         assertNotNull(result, "암호화 결과 반환 실패(사용자 정의 salt)");
 
-        decryptResult = CryptoUtil.decryptAES256(result.getEncryptedString(),
-                                                 password,
-                                                 result.getIv(),
-                                                 salt.getBytes());
+        decryptResult = new String(CryptoUtil.decryptAES256(result.getEncrypted(),
+                                                            password,
+                                                            result.getIv(),
+                                                            salt.getBytes()));
 
         assertNotNull(decryptResult, "복호화 실패(사용자 정의 salt)");
         assertEquals(decryptResult, source, "복호화 결과 불일치(사용자 정의 salt)");
