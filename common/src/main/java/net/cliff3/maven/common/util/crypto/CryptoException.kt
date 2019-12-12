@@ -1,4 +1,4 @@
-package net.cliff3.maven.common.util
+package net.cliff3.maven.common.util.crypto
 
 /**
  * CryptoException

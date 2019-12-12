@@ -1,6 +1,8 @@
 package net.cliff3.maven.common.util.web
 
+import net.cliff3.maven.common.util.crypto.CryptoUtil
 import org.apache.commons.codec.binary.Base64
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.UnsupportedEncodingException
@@ -35,21 +37,26 @@ class CookieUtil {
          * @param domain 도메인
          * @param path 쿠키 경로
          * @param maxAge 유지기간(초)
+         *
+         * @see Base64.encodeBase64URLSafeString
          */
         @JvmStatic
+        @Throws(IllegalArgumentException::class)
         fun addCookie(response: HttpServletResponse,
                       name: String,
                       value: String,
                       domain: String?,
                       path: String = "/",
-                      maxAge: Int?): Boolean {
+                      maxAge: Int?) {
             logger.debug("cookieName : $name")
             logger.debug("cookieValue : $value")
             logger.debug("domain : $domain")
             logger.debug("path : $path")
             logger.debug("maxAge : $maxAge")
 
-            var result: Boolean = true
+            if (StringUtils.isBlank(value)) {
+                throw IllegalArgumentException("Cookie value is empty")
+            }
 
             try {
                 val cookie: Cookie = Cookie(name, Base64.encodeBase64URLSafeString(value.toByteArray()))
@@ -68,35 +75,23 @@ class CookieUtil {
                 response.addCookie(cookie)
             } catch (e: Exception) {
                 logger.error("Fail add cookie", e)
-
-                result = false
             }
-
-            return result
         }
 
         /**
          * [addCookie] 참고
          */
         @JvmStatic
-        fun addCookie(response: HttpServletResponse, name: String, value: String): Boolean {
-            return addCookie(response = response,
-                             name = name,
-                             value = value,
-                             domain = null,
-                             maxAge = -1)
+        fun addCookie(response: HttpServletResponse, name: String, value: String) {
+            addCookie(response = response, name = name, value = value, domain = null, maxAge = -1)
         }
 
         /**
          * [addCookie] 참고
          */
         @JvmStatic
-        fun addCookie(response: HttpServletResponse, name: String, value: String, domain: String): Boolean {
-            return addCookie(response = response,
-                             name = name,
-                             value = value,
-                             domain = domain,
-                             maxAge = -1)
+        fun addCookie(response: HttpServletResponse, name: String, value: String, domain: String) {
+            addCookie(response = response, name = name, value = value, domain = domain, maxAge = -1)
         }
 
         /**
@@ -151,13 +146,14 @@ class CookieUtil {
         }
 
         /**
-         * 쿠키 값을 반환한다.
+         * 쿠키 값을 반환한다. **isDecoding** 인자를 이용하여 복호화([Base64.decodeBase64]) 여부를 지정한다.
          *
          * @param request [HttpServletRequest]
          * @param name 쿠키 이름
          * @param isDecoding [Base64.decodeBase64] 처리 여부
          *
          * @return 쿠키 값
+         * @see Base64.decodeBase64
          */
         @JvmStatic
         fun getCookie(request: HttpServletRequest, name: String, isDecoding: Boolean = false): String {
@@ -212,6 +208,25 @@ class CookieUtil {
             response.addCookie(cookie)
         }
 
-        // TODO(joonho): 2019-09-09 encrypt cookie 작성 할 것.
+        fun addEncryptedCookie(response: HttpServletResponse,
+                               name: String,
+                               value: String,
+                               domain: String?,
+                               path: String = "/",
+                               maxAge: Int?,
+                               encryptKey: String) {
+            logger.debug("cookieName : $name")
+            logger.debug("cookieValue : $value")
+            logger.debug("domain : $domain")
+            logger.debug("path: $path")
+            logger.debug("maxAge : $maxAge")
+            logger.debug("encryptKey : $encryptKey")
+
+//            try {
+//                var encryptedBytes: ByteArray = CryptoUtil.encryptDataByRSA(value.toByteArray(StandardCharsets.UTF_8),
+//                                                                            encryptKey)
+//
+//            }
+        }
     }
 }

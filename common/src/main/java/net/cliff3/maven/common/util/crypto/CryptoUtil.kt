@@ -1,6 +1,5 @@
 package net.cliff3.maven.common.util.crypto
 
-import net.cliff3.maven.common.util.CryptoException
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -207,7 +206,7 @@ class CryptoUtil {
          * AES128 암호화 처리. [makeAESEncrypt] 참고
          */
         @JvmStatic
-        @Throws(CryptoException::class)
+        @Throws(CryptoException::class, IllegalArgumentException::class)
         fun makeAES128Encrypt(target: String, secret: String): AESCrypto {
             return makeAESEncrypt(target, secret, 128, generateSalt())
         }
@@ -216,7 +215,7 @@ class CryptoUtil {
          * AES128 암호화 처리. [makeAESEncrypt] 참고
          */
         @JvmStatic
-        @Throws(CryptoException::class)
+        @Throws(CryptoException::class, IllegalArgumentException::class)
         fun makeAES128Encrypt(target: String, secret: String, salt: String): AESCrypto {
             return makeAESEncrypt(target, secret, 128, salt.toByteArray())
         }
@@ -225,7 +224,7 @@ class CryptoUtil {
          * AES128 암호화 처리. [makeAESEncrypt] 참고
          */
         @JvmStatic
-        @Throws(CryptoException::class)
+        @Throws(CryptoException::class, IllegalArgumentException::class)
         fun makeAES128Encrypt(target: String, secret: String, salt: ByteArray): AESCrypto {
             return makeAESEncrypt(target, secret, 128, salt)
         }
@@ -234,7 +233,7 @@ class CryptoUtil {
          * AES256 암호화 처리. [makeAESEncrypt] 참고
          */
         @JvmStatic
-        @Throws(CryptoException::class)
+        @Throws(CryptoException::class, IllegalArgumentException::class)
         fun makeAES256Encrypt(target: String, secret: String): AESCrypto {
             return makeAESEncrypt(target, secret, 256, generateSalt())
         }
@@ -243,7 +242,7 @@ class CryptoUtil {
          * AES256 암호화 처리. [makeAESEncrypt] 참고
          */
         @JvmStatic
-        @Throws(CryptoException::class)
+        @Throws(CryptoException::class, IllegalArgumentException::class)
         fun makeAES256Encrypt(target: String, secret: String, salt: String): AESCrypto {
             return makeAESEncrypt(target, secret, 256, salt.toByteArray())
         }
@@ -252,7 +251,7 @@ class CryptoUtil {
          * AES256 암호화 처리. [makeAESEncrypt] 참고
          */
         @JvmStatic
-        @Throws(CryptoException::class)
+        @Throws(CryptoException::class, IllegalArgumentException::class)
         fun makeAES256Encrypt(target: String, secret: String, salt: ByteArray): AESCrypto {
             return makeAESEncrypt(target, secret, 256, salt)
         }
@@ -261,7 +260,7 @@ class CryptoUtil {
          * AES128 복호화 처리. [decryptAES] 참고
          */
         @JvmStatic
-        @Throws(CryptoException::class)
+        @Throws(CryptoException::class, IllegalArgumentException::class)
         fun decryptAES128(target: ByteArray, secret: String, iv: ByteArray, salt: ByteArray): ByteArray {
             return decryptAES(target, secret, 128, iv, salt)
         }
@@ -270,39 +269,105 @@ class CryptoUtil {
          * AES256 복호화 처리. [decryptAES] 참고.
          */
         @JvmStatic
-        @Throws(CryptoException::class)
+        @Throws(CryptoException::class, IllegalArgumentException::class)
         fun decryptAES256(target: ByteArray, secret: String, iv: ByteArray, salt: ByteArray): ByteArray {
             return decryptAES(target, secret, 256, iv, salt)
         }
 
+        /**
+         * RSA 암호화 처리. 임의의 `public key` 및 `private key`를 생성하여 해당 결과를 [RSAKeySet]로 반환한다.
+         *
+         * **toStringKey** 속성을 이용하여 `public key`및 `private key`를 16진수 문자열(hex)로 변환하여 각각의 `modulus`, `exponent`로 보관한다.
+         *
+         * @param target 암호화 대상
+         * @param toStringKey public key, private key의 16진수 문자열(modulus/exponent) 생성 여부
+         *
+         * @return 암호화 결과
+         * @throws CryptoException
+         */
+        @JvmStatic
+        @Throws(CryptoException::class)
         fun encryptDataByRSA(target: ByteArray, toStringKey: Boolean = true): RSAKeySet {
-            val keySize: Int = 2048
-            val cipher: Cipher = Cipher.getInstance(Transformation.RSA_ECB_PKCS1PADDING.value)
-            val random: SecureRandom = SecureRandom()
-            val generator: KeyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM_RSA)
+            try {
+                val keySize: Int = 2048
+                val cipher: Cipher = Cipher.getInstance(Transformation.RSA_ECB_PKCS1PADDING.value)
+                val random: SecureRandom = SecureRandom()
+                val generator: KeyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM_RSA)
 
-            generator.initialize(keySize, random)
+                generator.initialize(keySize, random)
 
-            val keyPair: KeyPair = generator.generateKeyPair()
-            val publicKey: Key = keyPair.public
-            val privateKey: Key = keyPair.private
+                val keyPair: KeyPair = generator.generateKeyPair()
+                val publicKey: Key = keyPair.public
+                val privateKey: Key = keyPair.private
 
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey)
+                cipher.init(Cipher.ENCRYPT_MODE, publicKey)
 
-            val encrypted: ByteArray = cipher.doFinal(target)
-            val result: RSAKeySet = RSAKeySet(publicKey = publicKey, privateKey = privateKey, toStringKey = toStringKey)
+                val encrypted: ByteArray = cipher.doFinal(target)
+                val result: RSAKeySet = RSAKeySet(publicKey = publicKey,
+                                                  privateKey = privateKey,
+                                                  toStringKey = toStringKey)
 
-            result.encryptedValue = encrypted
+                result.encryptedValue = encrypted
 
-            return result
+                return result
+            } catch (e: Exception) {
+                logger.error("RSA 암호화 실패", e)
+
+                throw CryptoException("RSA 암호화 실패", e)
+            }
         }
 
+        /**
+         * RSA 알고리즘으로 해당 바이트 배열을 암호화 한다.
+         *
+         * @param target 암호화 대상 바이트 배열
+         * @param publicKey 공개키
+         *
+         * @return RSA 알고리즘으로 암호화된 바이트 배열
+         * @throws CryptoException
+         */
+        @JvmStatic
+        @Throws(CryptoException::class)
+        fun encryptDataByRSA(target: ByteArray, publicKey: ByteArray): ByteArray {
+            try {
+                val cipher: Cipher = Cipher.getInstance(Transformation.RSA_ECB_PKCS1PADDING.value)
+
+                cipher.init(Cipher.ENCRYPT_MODE, loadKey(publicKey, LoadKeyType.PUBLIC_KEY))
+
+                return cipher.doFinal(target)
+            } catch (e: Exception) {
+                logger.error("RSA 암호화 실패", e)
+
+                throw CryptoException("RSA 암호화 실패", e)
+            }
+        }
+
+        @JvmStatic
+        @Throws(CryptoException::class)
+        fun encryptDataByRSA(target: ByteArray, publicKey: Key): ByteArray {
+            return encryptDataByRSA(target, publicKey.encoded)
+        }
+
+        @JvmStatic
+        @Throws(CryptoException::class)
         fun decryptDataByRSA(target: ByteArray, keySet: RSAKeySet): ByteArray {
-            val cipher: Cipher = Cipher.getInstance(Transformation.RSA_ECB_PKCS1PADDING.value)
+            return decryptDataByRSA(target, keySet.privateKey)
+        }
 
-            cipher.init(Cipher.DECRYPT_MODE, keySet.privateKey)
+        @JvmStatic
+        @Throws(CryptoException::class)
+        fun decryptDataByRSA(target: ByteArray, privateKey: Key?): ByteArray {
+            try {
+                val cipher: Cipher = Cipher.getInstance(Transformation.RSA_ECB_PKCS1PADDING.value)
 
-            return cipher.doFinal(target)
+                cipher.init(Cipher.DECRYPT_MODE, privateKey)
+
+                return cipher.doFinal(target)
+            } catch (e: Exception) {
+                logger.error("RSA 복호화 실패", e);
+
+                throw CryptoException("RSA 복호화 실패", e);
+            }
         }
 
         //--------------------------------------------------------------------------------------------------------------
@@ -328,7 +393,7 @@ class CryptoUtil {
          * @see javax.crypto.BadPaddingException
          * @see javax.crypto.IllegalBlockSizeException
          */
-        @Throws(CryptoException::class)
+        @Throws(CryptoException::class, IllegalArgumentException::class)
         private fun makeAESEncrypt(target: String, secret: String, keySize: Int, salt: ByteArray): AESCrypto {
             require(StringUtils.isNotBlank(target)) { throw IllegalArgumentException("암호화 대상 문자열 없음") }
             require(StringUtils.isNotBlank(secret)) { throw IllegalArgumentException("암호화 키 없음") }
@@ -375,7 +440,7 @@ class CryptoUtil {
          * @see javax.crypto.BadPaddingException
          * @see javax.crypto.IllegalBlockSizeException
          */
-        @Throws(CryptoException::class)
+        @Throws(CryptoException::class, IllegalArgumentException::class)
         private fun decryptAES(target: ByteArray,
                                secret: String,
                                keySize: Int,
@@ -424,19 +489,16 @@ class CryptoUtil {
          * @return 공개/비밀키
          */
         @Throws(IOException::class, NoSuchAlgorithmException::class, InvalidKeySpecException::class)
-        private fun loadKey(key: String, type: LoadKeyType): Key {
-            require(key.isNotBlank()) { throw IllegalArgumentException("암호화 키가 없음") }
-
-            val decodedKey: ByteArray = key.toByteArray()
+        private fun loadKey(key: ByteArray, type: LoadKeyType): Key {
             val factory: KeyFactory = KeyFactory.getInstance(ALGORITHM_RSA)
             val keySpec: EncodedKeySpec
 
             return if (LoadKeyType.PUBLIC_KEY == type) {
-                keySpec = X509EncodedKeySpec(decodedKey)
+                keySpec = X509EncodedKeySpec(key)
 
                 factory.generatePublic(keySpec)
             } else {
-                keySpec = PKCS8EncodedKeySpec(decodedKey)
+                keySpec = PKCS8EncodedKeySpec(key)
 
                 factory.generatePrivate(keySpec)
             }

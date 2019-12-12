@@ -1,5 +1,6 @@
 package net.cliff3.maven.common.util.crypto
 
+import org.apache.commons.codec.binary.Base64
 import java.math.BigInteger
 import java.security.Key
 import java.security.KeyFactory
@@ -21,9 +22,21 @@ class RSAKeySet {
         private set
 
     /**
+     * [Base64.encodeBase64URLSafeString]으로 변환된 Public key 문자열
+     */
+    var publicKeyString: String? = null
+        private set
+
+    /**
      * Private key
      */
     var privateKey: Key? = null
+        private set
+
+    /**
+     * [Base64.encodeBase64URLSafeString]으로 변환된 Private key 문자열
+     */
+    var privateKeyString: String? = null
         private set
 
     /**
@@ -62,7 +75,7 @@ class RSAKeySet {
      * [publicKeyModulus], [publicKeyExponent], [privateKeyModulus], [privateKeyExponent] 참고
      *
      */
-    var toStringKey: Boolean? = null
+    var toStringKey: Boolean? = false
         private set
 
     constructor(publicKeyModulus: String,
@@ -83,6 +96,8 @@ class RSAKeySet {
         this.toStringKey = this.toStringKey
 
         if (toStringKey) {
+            this.toStringKey = toStringKey
+
             keyToString()
         }
     }
@@ -111,13 +126,15 @@ class RSAKeySet {
         // public
         val publicSpec: RSAPublicKeySpec = factory.getKeySpec(publicKey, RSAPublicKeySpec::class.java)
 
-        this.publicKeyModulus = publicSpec.modulus.toString(16)
-        this.publicKeyExponent = publicSpec.publicExponent.toString(16)
+        publicKeyModulus = publicSpec.modulus.toString(16)
+        publicKeyExponent = publicSpec.publicExponent.toString(16)
+        publicKeyString = Base64.encodeBase64URLSafeString(publicKey?.encoded)
 
         // private
         val privateSpec: RSAPrivateKeySpec = factory.getKeySpec(privateKey, RSAPrivateKeySpec::class.java)
 
         privateKeyModulus = privateSpec.modulus.toString(16)
         privateKeyExponent = privateSpec.privateExponent.toString(16)
+        privateKeyString = Base64.encodeBase64URLSafeString(privateKey?.encoded)
     }
 }
