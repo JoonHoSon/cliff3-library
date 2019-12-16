@@ -12,18 +12,33 @@ import java.util.regex.Pattern
  * @since 1.0.0
  */
 class NetworkUtil {
+    /**
+     * Companion object
+     */
     companion object {
+        /**
+         * [Logger]
+         */
         private val logger: Logger = LoggerFactory.getLogger(NetworkUtil::class.java)
 
+        /**
+         * IP4 클래스 단위 패턴
+         */
         private const val IP_PATTERN: String = "([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-4])"
 
+        /**
+         * IP4 아이피 전체 패턴
+         */
         private val IP_FULL_PATTERN: String = String.format("%s\\.%s\\.%s\\.%s",
                                                             IP_PATTERN,
                                                             IP_PATTERN,
                                                             IP_PATTERN,
                                                             IP_PATTERN)
 
-        private val IP_REGEXP = Pattern.compile(IP_FULL_PATTERN)
+        /**
+         * [IP_FULL_PATTERN] [Pattern]
+         */
+        private val IP_REGEXP: Pattern = Pattern.compile(IP_FULL_PATTERN)
 
         /**
          * 대상 아이피 주소 문자열의 유효성 여부를 확인한다.

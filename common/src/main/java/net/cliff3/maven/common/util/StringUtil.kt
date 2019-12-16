@@ -14,7 +14,13 @@ import java.util.regex.Pattern
  * @since 1.0.0
  */
 class StringUtil {
+    /**
+     * Companion object
+     */
     companion object {
+        /**
+         * [Logger]
+         */
         private val logger: Logger = LoggerFactory.getLogger(StringUtil::class.java)
 
         /**

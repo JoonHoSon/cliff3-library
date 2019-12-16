@@ -4,158 +4,120 @@ import static org.testng.Assert.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
+import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 /**
  * CryptoUtilTest
  *
  * @author JoonHo Son
- * @version 1.0.0 2019-09-09 최초 작성
+ * @version 1.0.0 2019-12-16 최초 작성
  * @since 1.0.0
  */
+@Slf4j
+@Test(groups = "cryptoUtilTest")
 public class CryptoUtilTest {
-    private Logger logger = LoggerFactory.getLogger(CryptoUtilTest.class);
+    private static final String SOURCE_KOREAN = "한글 원본 입니다.!@#%%23334!!@";
 
-    private final String source = "한글 입력값abc123&";
-
-    private final String password = "비밀번호123";
-
-    private final String salt = "이건 salt";
+    private static final String SECRET = "this_is_password!@#$%";
 
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     @Test
-    public void sha256Test() throws CryptoException {
-        final String result = new String(CryptoUtil.makeSHA256Hash("123"));
+    public void testSHA256Hash() {
+        Optional<byte[]> _result = CryptoUtil.makeSHA256Hash(SOURCE_KOREAN);
 
-        logger.debug("hash result : {}", result);
-
-        assertNotNull(result, "SHA256 hashing 실패");
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void sha256ExceptionTest() throws CryptoException {
-        final String result = new String(CryptoUtil.makeSHA256Hash(""));
-
-        assertNotNull(result, "SHA256 hashing 실패");
+        assertTrue(_result.isPresent(), "SHA256 암호화 실패");
     }
 
     @Test
-    public void aes128Test() throws CryptoException {
-        AESCrypto result = CryptoUtil.makeAES128Encrypt(source, password);
+    public void testAES128Encrypt() {
+        Optional<AESCrypto> _result = CryptoUtil.makeAES128Encrypt(SOURCE_KOREAN, SECRET);
 
-        assertNotNull(result, "암호화 결과 반환 실패");
+        assertTrue(_result.isPresent(), "AES128 암호화 결과 반환값 없음");
 
-        String decryptResult = new String(CryptoUtil.decryptAES128(result.getEncrypted(),
-                                                                   password,
-                                                                   result.getIv(),
-                                                                   result.getSalt()));
+        log.debug("aes crypto encrypted {}", _result.get().getEncrypted());
 
-        assertNotNull(decryptResult, "복호화 실패");
-        assertEquals(decryptResult, source, "복호화 결과 불일치");
+        AESCrypto _aesCrypto = _result.get();
 
-        logger.debug("복호화 문자열 : {}", decryptResult);
+        final Optional<byte[]> _decrypted = CryptoUtil.decryptAES128(_aesCrypto.getEncrypted(),
+                                                                     SECRET,
+                                                                     _aesCrypto.getIv(),
+                                                                     _aesCrypto.getSalt());
 
-        result = CryptoUtil.makeAES128Encrypt(source, password, salt.getBytes());
-
-        assertNotNull(result, "암호화 결과 반환 실패(사용자 정의 salt)");
-
-        decryptResult = new String(CryptoUtil.decryptAES128(result.getEncrypted(),
-                                                            password,
-                                                            result.getIv(),
-                                                            salt.getBytes()));
-
-        assertNotNull(decryptResult, "복호화 실패(사용자 정의 salt)");
-        assertEquals(decryptResult, source, "복호화 결과 불일치(사용자 정의 salt)");
-
-        logger.debug("복호화 문자열 : {}", decryptResult);
+        assertTrue(_decrypted.isPresent(), "복호화 결과 없음");
+        assertEquals(new String(_decrypted.get(), UTF_8), SOURCE_KOREAN, "복호화 실패(결과 불일치)");
     }
 
     @Test
-    public void aes256Test() throws CryptoException {
-        AESCrypto result = CryptoUtil.makeAES256Encrypt(source, password);
+    public void testAES128EncryptByBase64() {
+        Optional<AESCrypto> _result = CryptoUtil.makeAES128Encrypt(SOURCE_KOREAN, SECRET);
 
-        assertNotNull(result, "암호화 결과 반환 실패");
+        assertTrue(_result.isPresent(), "AES128 암호화 결과 반환값 없음");
 
-        String decryptResult = new String(CryptoUtil.decryptAES256(result.getEncrypted(),
-                                                                   password,
-                                                                   result.getIv(),
-                                                                   result.getSalt()));
+        String _encoded = Base64.encodeBase64String(_result.get().getEncrypted());
 
-        assertNotNull(decryptResult, "복호화 실패");
-        assertEquals(decryptResult, source, "복호화 결과 불일치");
+        Optional<byte[]> _decrypted = CryptoUtil.decryptAES128ByBase64(_encoded,
+                                                                       SECRET,
+                                                                       _result.get().getIv(),
+                                                                       _result.get().getSalt());
 
-        logger.debug("복호화 문자열 : {}", decryptResult);
+        assertTrue(_decrypted.isPresent(), "복호화 결과 없음(normal base64 string)");
+        assertEquals(new String(_decrypted.get(), UTF_8), SOURCE_KOREAN, "복호화 실패(normal base64 string: 결과 불일치)");
 
-        result = CryptoUtil.makeAES256Encrypt(source, password, salt.getBytes());
+        log.debug("decrypted string : {}", new String(_decrypted.get(), UTF_8));
 
-        assertNotNull(result, "암호화 결과 반환 실패(사용자 정의 salt)");
+        _encoded = Base64.encodeBase64URLSafeString(_result.get().getEncrypted());
 
-        decryptResult = new String(CryptoUtil.decryptAES256(result.getEncrypted(),
-                                                            password,
-                                                            result.getIv(),
-                                                            salt.getBytes()));
+        _decrypted = CryptoUtil.decryptAES128ByBase64(_encoded, SECRET, _result.get().getIv(), _result.get().getSalt());
 
-        assertNotNull(decryptResult, "복호화 실패(사용자 정의 salt)");
-        assertEquals(decryptResult, source, "복호화 결과 불일치(사용자 정의 salt)");
-
-        logger.debug("복호화 문자열 : {}", decryptResult);
-
-        result = CryptoUtil.makeAES256Encrypt(source, password, salt);
-
-        assertNotNull(result, "암호화 결과 반환 실패(사용자 정의 salt)");
-
-        decryptResult = new String(CryptoUtil.decryptAES256(result.getEncrypted(),
-                                                            password,
-                                                            result.getIv(),
-                                                            salt.getBytes()));
-
-        assertNotNull(decryptResult, "복호화 실패(사용자 정의 salt)");
-        assertEquals(decryptResult, source, "복호화 결과 불일치(사용자 정의 salt)");
-
-        logger.debug("복호화 문자열 : {}", decryptResult);
+        assertTrue(_decrypted.isPresent(), "복호화 결과 없음(url safe base64 string)");
+        assertEquals(new String(_decrypted.get(), UTF_8), SOURCE_KOREAN, "복호화 실패(url safe base64 string: 결과 불일치)");
     }
 
     @Test
-    public void rsaTest() throws CryptoException {
-        final String _source = "테스트 문자열12!@%^&%";
-        RSAKeySet _result = CryptoUtil.encryptDataByRSA(_source.getBytes(UTF_8), true);
+    public void testAES256Encrypt() {
+        Optional<AESCrypto> _result = CryptoUtil.makeAES256Encrypt(SOURCE_KOREAN, SECRET);
 
-        assertNotNull(_result, "RSA 암호화 결과 없음");
-        assertNotNull(_result.getEncryptedValue(), "RSA 암호화 결과 오류(encryptedValue)");
-        assertNotNull(_result.getPrivateKey(), "RSA 암호화 결과 오류(privateKey)");
-        assertNotNull(_result.getPrivateKeyExponent(), "RSA 암호화 결과 오류(privateKeyExponent)");
-        assertNotNull(_result.getPrivateKeyModulus(), "RSA 암호화 결과 오류(privateKeyModulus)");
-        assertNotNull(_result.getPublicKey(), "RSA 암호화 결과 오류(publicKey)");
-        assertNotNull(_result.getPublicKeyExponent(), "RSA 암호화 오류(publicKeyExponent)");
-        assertNotNull(_result.getPublicKeyModulus(), "RSA 암호화 오류(publicKeyModulus)");
-        assertTrue(_result.getToStringKey() != null && _result.getToStringKey(), "RSA 암호화 오류(toStringKey)");
+        assertTrue(_result.isPresent(), "AES256 암호화 결과 반환값 없음");
 
-        byte[] _decryptedSource = CryptoUtil.decryptDataByRSA(_result.getEncryptedValue(), _result);
+        log.debug("aes crypto encrypted {}", _result.get().getEncrypted());
 
-        assertNotNull(_decryptedSource, "RSA 복호화 실패");
+        AESCrypto _aesCrypto = _result.get();
 
-        String _convertedResult = new String(_decryptedSource, UTF_8);
+        final Optional<byte[]> _decrypted = CryptoUtil.decryptAES256(_aesCrypto.getEncrypted(),
+                                                                     SECRET,
+                                                                     _aesCrypto.getIv(),
+                                                                     _aesCrypto.getSalt());
 
-        assertNotNull(_convertedResult, "RSA 복호화 오류(문자열 변환 실패)");
-        assertEquals(_convertedResult,_source,"RSA 복호화 오류(복호화 결과 불일치)");
-
+        assertTrue(_decrypted.isPresent(), "복호화 결과 없음");
+        assertEquals(new String(_decrypted.get(), UTF_8), SOURCE_KOREAN, "복호화 실패(결과 불일치)");
     }
 
     @Test
-    public void rsaTestWithKeySets() throws CryptoException {
-        final String _source = "월급루팡. 일 안하고 너는 하루 종일 뭐하니?";
-        RSAKeySet _result = CryptoUtil.encryptDataByRSA(_source.getBytes(UTF_8), true);
-        final byte[] _rsaResults = CryptoUtil.encryptDataByRSA(_source.getBytes(UTF_8), Base64.decodeBase64(_result.getPublicKeyString()));
+    public void testAES256EncryptByBase64() {
+        Optional<AESCrypto> _result = CryptoUtil.makeAES256Encrypt(SOURCE_KOREAN, SECRET);
 
-        final String decrypt1 = new String(CryptoUtil.decryptDataByRSA(Objects.requireNonNull(_result.getEncryptedValue()), _result));
-        final String decrypt2 = new String(CryptoUtil.decryptDataByRSA(_rsaResults, _result));
+        assertTrue(_result.isPresent(), "AES128 암호화 결과 반환값 없음");
 
-        assertEquals(decrypt1, decrypt2, "암호화 결과 불일치");
+        String _encoded = Base64.encodeBase64String(_result.get().getEncrypted());
+
+        Optional<byte[]> _decrypted = CryptoUtil.decryptAES256ByBase64(_encoded,
+                                                                       SECRET,
+                                                                       _result.get().getIv(),
+                                                                       _result.get().getSalt());
+
+        assertTrue(_decrypted.isPresent(), "복호화 결과 없음(normal base64 string)");
+        assertEquals(new String(_decrypted.get(), UTF_8), SOURCE_KOREAN, "복호화 실패(normal base64 string: 결과 불일치)");
+
+        _encoded = Base64.encodeBase64URLSafeString(_result.get().getEncrypted());
+
+        _decrypted = CryptoUtil.decryptAES256ByBase64(_encoded, SECRET, _result.get().getIv(), _result.get().getSalt());
+
+        assertTrue(_decrypted.isPresent(), "복호화 결과 없음(url safe base64 string)");
+        assertEquals(new String(_decrypted.get(), UTF_8), SOURCE_KOREAN, "복호화 실패(url safe base64 string: 결과 불일치)");
     }
 }

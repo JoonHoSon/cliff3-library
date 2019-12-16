@@ -1,5 +1,6 @@
 package net.cliff3.maven.common.util
 
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
@@ -10,8 +11,14 @@ import org.slf4j.LoggerFactory
  * @since 1.0.0
  */
 class NumberUtil {
+    /**
+     * Companion object
+     */
     companion object {
-        private val logger = LoggerFactory.getLogger(NumberUtil::class.java)
+        /**
+         * [Logger]
+         */
+        private val logger:Logger = LoggerFactory.getLogger(NumberUtil::class.java)
 
         /**
          * 지정된 범위([min], [max]) 내에서 무작위 숫자를 반환한다.

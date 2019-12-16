@@ -1,6 +1,5 @@
 package net.cliff3.maven.common.util.web
 
-import net.cliff3.maven.common.util.crypto.CryptoUtil
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
@@ -19,7 +18,13 @@ import javax.servlet.http.HttpServletResponse
  * @since 1.0.0
  */
 class CookieUtil {
+    /**
+     * Companion object
+     */
     companion object {
+        /**
+         * [Logger]
+         */
         private val logger: Logger = LoggerFactory.getLogger(CookieUtil::class.java)
 
         /**

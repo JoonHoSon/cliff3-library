@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration scan="true" scanPeriod="30 seconds">
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<withJansi>true</withJansi>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]-[%highlight(%-5level)] %logger{36}.%M\(%line\) - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="net.cliff3.maven.common" level="debug" additivity="false">
+		<appender-ref ref="console" />
+	</logger>
+
+	<root level="debug">
+		<appender-ref ref="console" />
+	</root>
+</configuration>
