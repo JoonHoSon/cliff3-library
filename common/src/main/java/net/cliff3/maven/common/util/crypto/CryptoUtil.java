@@ -2,7 +2,10 @@ package net.cliff3.maven.common.util.crypto;
 
 import static net.cliff3.maven.common.util.crypto.CryptoUtil.Transformation.*;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
@@ -11,10 +14,19 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -32,31 +44,6 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class CryptoUtil {
     public enum Transformation {
-        /**
-         * DES/CBC/PKCS5Padding
-         */
-        DES_CBC_PKCS5PADDING("DES/CBC/PKCS5Padding"),
-
-        /**
-         * {@link #DES_CBC_PKCS5PADDING} 동일
-         */
-        DES(Transformation.DES_CBC_PKCS5PADDING.getTransformation()),
-
-        /**
-         * DES/ECB/PKCS5Padding
-         */
-        DES_ECB_PKCS5PADDING("DES/ECB/PKCS5Padding"),
-
-        /**
-         * DES/CFB8/NoPadding
-         */
-        DES_CFB8_NOPADDING("DES/CFB8/NoPadding"),
-
-        /**
-         * DES/OFB32/PCKS5Padding
-         */
-        DES_OFB32_PKCS5PADDING("DES/OFB32/PKCS5Padding"),
-
         /**
          * RSA/ECB/PKCS1Padding
          */
@@ -96,11 +83,6 @@ public class CryptoUtil {
      * 기본 인코딩/디코딩 {@link Charset}
      */
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
-
-    /**
-     * Algorithm(DES)
-     */
-    private static final String ALGORITHM_DES = "DES";
 
     /**
      * Algorithm(RSA)
@@ -218,7 +200,7 @@ public class CryptoUtil {
     }
 
     /**
-     * AES128 암호화. {@link #makeAESEncrypt(String, String, int, byte[])} 참고.
+     * AES128 암호화. {@link #encryptAES(String, String, int, byte[])} 참고.
      *
      * @param target 대상 문자열
      * @param secret 암호화키
@@ -226,12 +208,12 @@ public class CryptoUtil {
      * @return 처리 결과
      * @throws CryptoException 암호화 처리 중 발생
      */
-    public static Optional<AESCrypto> makeAES128Encrypt(String target, String secret) {
-        return makeAESEncrypt(target, secret, KEY_128, generateSalt());
+    public static Optional<AESCrypto> encryptAES128(String target, String secret) {
+        return encryptAES(target, secret, KEY_128, generateSalt());
     }
 
     /**
-     * AES128 암호화. {@link #makeAESEncrypt(String, String, int, byte[])} 참고.
+     * AES128 암호화. {@link #encryptAES(String, String, int, byte[])} 참고.
      *
      * @param target 대상 문자열
      * @param secret 암호화키
@@ -240,12 +222,12 @@ public class CryptoUtil {
      * @return 처리 결과
      * @throws CryptoException 암호화 처리 중 발생
      */
-    public static Optional<AESCrypto> makeAES128Encrypt(String target, String secret, byte[] salt) {
-        return makeAESEncrypt(target, secret, KEY_128, salt);
+    public static Optional<AESCrypto> encryptAES128(String target, String secret, byte[] salt) {
+        return encryptAES(target, secret, KEY_128, salt);
     }
 
     /**
-     * AES256 암호화. {@link #makeAESEncrypt(String, String, int, byte[])} 참고.
+     * AES256 암호화. {@link #encryptAES(String, String, int, byte[])} 참고.
      *
      * @param target 대상 문자열
      * @param secret 암호화키
@@ -253,12 +235,12 @@ public class CryptoUtil {
      * @return 처리 결과
      * @throws CryptoException 암호화 처리 중 발생
      */
-    public static Optional<AESCrypto> makeAES256Encrypt(String target, String secret) {
-        return makeAESEncrypt(target, secret, KEY_256, generateSalt());
+    public static Optional<AESCrypto> encryptAES256(String target, String secret) {
+        return encryptAES(target, secret, KEY_256, generateSalt());
     }
 
     /**
-     * AES256 암호화. {@link #makeAESEncrypt(String, String, int, byte[])} 참고.
+     * AES256 암호화. {@link #encryptAES(String, String, int, byte[])} 참고.
      *
      * @param target 대상 문자열
      * @param secret 암호화키
@@ -267,8 +249,8 @@ public class CryptoUtil {
      * @return 처리 결과
      * @throws CryptoException 암화화 처리 중 발생
      */
-    public static Optional<AESCrypto> makeAES256Encrypt(String target, String secret, byte[] salt) {
-        return makeAESEncrypt(target, secret, KEY_256, salt);
+    public static Optional<AESCrypto> encryptAES256(String target, String secret, byte[] salt) {
+        return encryptAES(target, secret, KEY_256, salt);
     }
 
     /**
@@ -354,6 +336,135 @@ public class CryptoUtil {
         return decryptAES(target, secret, ivKey, salt, KEY_256);
     }
 
+    /**
+     * RSA key pair 생성
+     *
+     * @return {@link KeyPair}
+     */
+    public static KeyPair generateRSAKeyPair() {
+        try {
+            final int keySize = 2048;
+            SecureRandom _random = new SecureRandom();
+            KeyPairGenerator _generator = KeyPairGenerator.getInstance(ALGORITHM_RSA);
+
+            _generator.initialize(keySize, _random);
+
+            return _generator.generateKeyPair();
+        } catch (NoSuchAlgorithmException e) {
+            throw new CryptoException("키쌍 생성 실패", e);
+        }
+    }
+
+    /**
+     * RSA 암호화 처리
+     *
+     * @param target    암호화 대상
+     * @param publicKey 공개키
+     *
+     * @return 암호화 결과
+     * @throws CryptoException 암호화 처리시
+     * @see NoSuchAlgorithmException
+     * @see NoSuchPaddingException
+     * @see InvalidKeySpecException
+     * @see InvalidKeyException
+     * @see IllegalBlockSizeException
+     * @see BadPaddingException
+     */
+    public static Optional<byte[]> encryptRSA(byte[] target, byte[] publicKey) {
+        return Optional.ofNullable(target).map(t -> {
+            try {
+                Cipher _cipher = Cipher.getInstance(RSA.getTransformation());
+
+                _cipher.init(Cipher.ENCRYPT_MODE, loadKey(publicKey, LoadKeyType.PUBLIC_KEY));
+
+                return Optional.of(_cipher.doFinal(target));
+            } catch (Throwable e) {
+                throw new CryptoException("RSA 암호화 오류", e);
+            }
+        }).orElse(Optional.empty());
+    }
+
+    /**
+     * {@link #encryptRSA(byte[], byte[])} 참고
+     *
+     * @param target        암호화 대상
+     * @param makeHexString 공개/비공개 키의 계수, 지수 및 {@link Base64#encodeBase64URLSafeString(byte[])} 생성 여부
+     *
+     * @return 암호화 결과
+     * @see RSAKeySet
+     * @see #generateRSAKeyPair()
+     */
+    public static Optional<RSAKeySet> encryptRSA(byte[] target, boolean makeHexString) {
+        KeyPair _keyPair = generateRSAKeyPair();
+        Optional<byte[]> _encrypted = encryptRSA(target, _keyPair.getPublic().getEncoded());
+
+        if (_encrypted.isPresent()) {
+            RSAKeySet _result = new RSAKeySet(_keyPair.getPublic(), _keyPair.getPrivate(), true);
+
+            _result.setEncryptedValue(_encrypted.get());
+            return Optional.of(_result);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * RSA 복호화 처리
+     *
+     * @param target     복호화 대상
+     * @param privateKey 비밀키
+     *
+     * @return 복호화 결과
+     * @throws CryptoException 복호화 실패시
+     * @see NoSuchAlgorithmException
+     * @see NoSuchPaddingException
+     * @see InvalidKeySpecException
+     * @see InvalidKeyException
+     * @see IllegalBlockSizeException
+     * @see BadPaddingException
+     */
+    public static Optional<byte[]> decryptRSA(byte[] target, byte[] privateKey) {
+        return Optional.ofNullable(target).map(t -> {
+            try {
+                Cipher _cipher = Cipher.getInstance(RSA.getTransformation());
+                Key _privateKey = loadKey(privateKey, LoadKeyType.PRIVATE_KEY);
+
+                _cipher.init(Cipher.DECRYPT_MODE, _privateKey);
+
+                return Optional.of(_cipher.doFinal(target));
+            } catch (Throwable e) {
+                throw new CryptoException("RSA 복호화 실패", e);
+            }
+        }).orElse(Optional.empty());
+    }
+
+    /**
+     * {@link #decryptRSA(byte[], byte[])} 참고
+     *
+     * @param target 복호화 대상
+     * @param keySet 비밀키 정보를 포함하는 {@link RSAKeySet}
+     *
+     * @return 복호화 결과
+     * @throws CryptoException 복호화 실패시
+     */
+    public static Optional<byte[]> decryptRSA(byte[] target, RSAKeySet keySet) {
+        return decryptRSA(target, keySet.getPrivateKey().getEncoded());
+    }
+
+    /**
+     * 임의의  salt 생성
+     *
+     * @return salt
+     */
+    public static byte[] generateSalt() {
+        SecureRandom _random = new SecureRandom();
+        byte[] _bytes = new byte[30];
+
+        _random.nextBytes(_bytes);
+
+        return _bytes;
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     // private function
     //------------------------------------------------------------------------------------------------------------------
@@ -379,7 +490,7 @@ public class CryptoUtil {
      * @see javax.crypto.BadPaddingException
      * @see javax.crypto.IllegalBlockSizeException
      */
-    private static Optional<AESCrypto> makeAESEncrypt(String target, String secret, int keySize, byte[] salt) {
+    private static Optional<AESCrypto> encryptAES(String target, String secret, int keySize, byte[] salt) {
         return Optional.ofNullable(target).filter(StringUtils::isNotBlank).map(t -> {
             try {
                 SecretKeyFactory _factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
@@ -398,7 +509,7 @@ public class CryptoUtil {
                 byte[] encryptedBytes = _cipher.doFinal(target.getBytes(UTF_8));
 
                 return Optional.of(new AESCrypto(salt, encryptedBytes, _ivBytes));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 throw new CryptoException("AES암호화 오류", e);
             }
         }).orElse(Optional.empty());
@@ -415,6 +526,11 @@ public class CryptoUtil {
      *
      * @return 처리 결과
      * @throws CryptoException 복호화 처리시
+     * @see NoSuchAlgorithmException
+     * @see InvalidKeySpecException
+     * @see NoSuchPaddingException
+     * @see InvalidKeyException
+     * @see java.security.InvalidAlgorithmParameterException
      */
     private static Optional<byte[]> decryptAES(byte[] target, String secret, byte[] ivBytes, byte[] salt, int keySize) {
         return Optional.ofNullable(target).map(t -> {
@@ -428,18 +544,34 @@ public class CryptoUtil {
                 _cipher.init(Cipher.DECRYPT_MODE, _secretKeySpec, new IvParameterSpec(ivBytes));
 
                 return Optional.of(_cipher.doFinal(target));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 throw new CryptoException("AES복호화 오류", e);
             }
         }).orElse(Optional.empty());
     }
 
-    private static byte[] generateSalt() {
-        SecureRandom _random = new SecureRandom();
-        byte[] _bytes = new byte[30];
+    /**
+     * 주어진 바이트 배열을 종류({@link LoadKeyType})에 따라 해당 키로 변환하여 반환
+     *
+     * @param key  키 바이트 배열
+     * @param type {@link LoadKeyType}
+     *
+     * @return {@link Key}
+     * @throws NoSuchAlgorithmException 허용되지 않는 알로리즘 지정시
+     * @throws InvalidKeySpecException  Key spec 지정 오류
+     */
+    private static Key loadKey(byte[] key, LoadKeyType type) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        KeyFactory _keyFactory = KeyFactory.getInstance(ALGORITHM_RSA);
+        EncodedKeySpec _encodedKeySpec;
 
-        _random.nextBytes(_bytes);
+        if (LoadKeyType.PUBLIC_KEY == type) {
+            _encodedKeySpec = new X509EncodedKeySpec(key);
 
-        return _bytes;
+            return _keyFactory.generatePublic(_encodedKeySpec);
+        } else {
+            _encodedKeySpec = new PKCS8EncodedKeySpec(key);
+
+            return _keyFactory.generatePrivate(_encodedKeySpec);
+        }
     }
 }
