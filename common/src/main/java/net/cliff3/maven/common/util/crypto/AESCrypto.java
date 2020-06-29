@@ -14,19 +14,19 @@ public class AESCrypto {
      * Salt
      */
     @Getter
-    private byte[] salt;
+    private final byte[] salt;
 
     /**
      * 암호화된 결과
      */
     @Getter
-    private byte[] encrypted;
+    private final byte[] encrypted;
 
     /**
      * Initialize vector
      */
     @Getter
-    private byte[] iv;
+    private final byte[] iv;
 
     /**
      * Default constructor
