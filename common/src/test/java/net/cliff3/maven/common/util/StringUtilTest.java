@@ -1,13 +1,14 @@
+package net.cliff3.maven.common.util;
+
 import static org.testng.Assert.*;
 
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
-import net.cliff3.maven.common.util.StringUtil;
 import org.testng.annotations.Test;
 
 /**
- * StringUtilTest
+ * net.cliff3.maven.common.util.StringUtilTest
  *
  * @author JoonHo Son
  * @version 1.0.0 2020-06-26 최초 작성
@@ -132,7 +133,7 @@ public class StringUtilTest {
 
         Optional<String> result = StringUtil.masking(target, 3, "#");
 
-        result.ifPresent(t ->{
+        result.ifPresent(t -> {
             log.debug("마스킹 결과 : {}", t);
             assertEquals(t, "010##########", "마스킹 처리 실패");
         });
@@ -171,7 +172,7 @@ public class StringUtilTest {
 
     @Test
     public void extractInitialConsonantsTest() {
-    	final String target = "세종대왕(世宗大王)";
+        final String target = "세종대왕(世宗大王)";
         Optional<String> result = StringUtil.extractInitialConsonants(target);
 
         result.ifPresent(t -> {

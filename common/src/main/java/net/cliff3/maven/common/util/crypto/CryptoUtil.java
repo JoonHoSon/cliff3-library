@@ -547,7 +547,7 @@ public class CryptoUtil {
             } catch (Throwable e) {
                 throw new CryptoException("AES복호화 오류", e);
             }
-        }).orElse(Optional.empty());
+        }).orElseGet(Optional::empty);
     }
 
     /**

@@ -489,8 +489,8 @@ public class StringUtil {
      *     {@code
      *     Optional<String> result = StringUtil.separateKoreanConsonantVowelCompletely("고맙습니다");
      *     // "ㄱㅗㅁㅏㅂㅅㅡㅂㄴㅣㄷㅏ" 반환
-     *     Optional<String> result = StringUtil.separateKoreanConsonantVowelCompletely("많다");
-     *     // "ㅁㅏㄴㅎㄷㅏ" 반환
+     *     Optional<String> result = StringUtil.separateKoreanConsonantVowelCompletely("많many다");
+     *     // "ㅁㅏㄴㅎmanyㄷㅏ" 반환
      *     Optional<String> result = StringUtil.separateKoreanConsonantsVowel("고맙thanks습니다");
      *     // "ㄱㅗㅁㅏㅂthanksㅅㅡㅂㄴㅣㄷㅏ" 반환
      *     }
