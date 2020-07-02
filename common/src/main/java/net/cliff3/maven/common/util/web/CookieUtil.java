@@ -5,10 +5,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
+import net.cliff3.maven.common.util.LocaleUtil;
 import net.cliff3.maven.common.util.crypto.AESCrypto;
 import net.cliff3.maven.common.util.crypto.CryptoUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -32,6 +34,14 @@ public class CookieUtil {
 
     public static final Charset UTF_8 = StandardCharsets.UTF_8;
 
+    /**
+     * 쿠키 이름과 쿠키 값의 유효성 검사
+     *
+     * @param name  쿠키 이름
+     * @param value 쿠키 값
+     *
+     * @return 유효성
+     */
     private static boolean isValidNameValue(String name, String value) {
         return Optional.ofNullable(name).filter(StringUtils::isNotBlank).isPresent() && Optional.ofNullable(value)
                                                                                                 .filter(StringUtils::isNotBlank)
@@ -49,6 +59,8 @@ public class CookieUtil {
      * @param domain   도메인
      * @param path     경로
      * @param maxAge   cookie max age(초)
+     *
+     * @return 등록된 쿠키
      */
     public static Optional<Cookie> addCookie(HttpServletResponse response,
                                              String name,
@@ -73,6 +85,8 @@ public class CookieUtil {
      * @param domain   도메인
      * @param path     경로
      * @param maxAge   cookie max age(초)
+     *
+     * @return 등록된 쿠키
      */
     private static Cookie doAddCookie(HttpServletResponse response,
                                       String name,
@@ -113,6 +127,8 @@ public class CookieUtil {
      * @param response {@link HttpServletResponse}
      * @param name     쿠키 이름
      * @param value    쿠키 값
+     *
+     * @return 등록된 쿠키
      */
     public static Optional<Cookie> addCookie(HttpServletResponse response,
                                              String name,
@@ -130,6 +146,7 @@ public class CookieUtil {
      * @param path     경로
      * @param maxAge   cookie max age(초)
      *
+     * @return 등록된 쿠키
      * @see #addCookie(HttpServletResponse, String, String, String, String, Integer)
      */
     public static Optional<Cookie> addCookieWithBase64(HttpServletResponse response,
@@ -157,6 +174,7 @@ public class CookieUtil {
      * @param name     쿠키 이름
      * @param value    쿠키 값. {@link Base64#encodeBase64URLSafeString(byte[])} 처리하여 등록한다.
      *
+     * @return 등록된 쿠키
      * @see #addCookieWithBase64(HttpServletResponse, String, String, String, String, Integer)
      */
     public static Optional<Cookie> addCookieWithBase64(HttpServletResponse response,
@@ -346,5 +364,49 @@ public class CookieUtil {
                                return "";
                            }
                        });
+    }
+
+    /**
+     * 쿠키로 저장된 {@link Locale} 정보를 반환. 저장된 값은 {@code <언어>_<지역>} 형태여야 하며, 존재하지 않거나 형식에 맞지 않을 경우
+     * <strong>defaultLocale</strong>을 반환한다.
+     *
+     * @param request       {@link HttpServletRequest}
+     * @param localeKey     쿠키 이름
+     * @param defaultLocale 기본 {@link Locale}
+     *
+     * @return {@link Locale}
+     * @see LocaleUtil
+     */
+    public static Optional<Locale> getLocaleFromCookie(HttpServletRequest request,
+                                                       String localeKey,
+                                                       Locale defaultLocale) {
+        log.debug("locale key : {}", localeKey);
+        log.debug("default locale country : {}", defaultLocale.getDisplayCountry());
+        log.debug("default locale language : {}", defaultLocale.getDisplayLanguage());
+
+        Optional<String> _localeKey = Optional.ofNullable(localeKey);
+        Optional<Locale> validLocale = (LocaleUtil.isValidLocale(defaultLocale))? Optional.of(defaultLocale): Optional.empty();
+        Locale result;
+
+        if (_localeKey.isPresent()) {
+            Optional<String> _cookieValue = CookieUtil.getCookie(request, _localeKey.get());
+
+            if (!_cookieValue.isPresent() || !_cookieValue.get().contains("_")) {
+                // ko_KR과 같이 underscore 구분자가 없을 경우 유효한 값이 아님
+                return validLocale;
+            }
+
+            String[] splited = _cookieValue.get().split("_");
+
+            if (splited.length != 2) {
+                return validLocale;
+            }
+
+            result = new Locale(splited[0], splited[1]);
+
+            return (LocaleUtil.isValidLocale(result))? Optional.of(result): validLocale;
+        } else {
+            return validLocale;
+        }
     }
 }

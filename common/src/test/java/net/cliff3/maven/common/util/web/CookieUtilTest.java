@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +52,6 @@ public class CookieUtilTest {
     }
 
     @Test(groups = "CookieUtilTest")
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public void addCookieTest() throws UnsupportedEncodingException {
         final String encryptedValue = Base64.encodeBase64URLSafeString(value.getBytes(UTF_8));
 
@@ -126,5 +126,34 @@ public class CookieUtilTest {
         decryptedCookie.ifPresent(t -> {
             assertEquals(t, value, "복호화된 값 불일치");
         });
+    }
+
+    @Test
+    public void getLocaleFromCookieTest() {
+        final String languageCode = "ko";
+        final String countryCode = "KR";
+        final String key = "savedLocale";
+        final Locale enUS = new Locale("en", "US");
+        Optional<Cookie> saved = CookieUtil.addCookie(response, key, String.format("%s_%s", languageCode, countryCode));
+
+        when(request.getCookies()).thenReturn(new Cookie[]{saved.get()});
+
+        Optional<Locale> result = CookieUtil.getLocaleFromCookie(request, key, enUS);
+
+        assertTrue(result.isPresent(), "locale 정보 조회 실패");
+        result.ifPresent(t -> {
+            assertEquals(t, new Locale(languageCode, countryCode), "반환된 locale 불일치");
+        });
+
+        result = CookieUtil.getLocaleFromCookie(request, "abc", enUS);
+
+        assertTrue(result.isPresent());
+        result.ifPresent(t -> {
+            assertEquals(t, enUS);
+        });
+
+        result = CookieUtil.getLocaleFromCookie(request, "abc", new Locale("a", "b"));
+
+        assertFalse(result.isPresent());
     }
 }

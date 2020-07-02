@@ -156,7 +156,7 @@ public class RSAKeySet {
      * 생성자를 통해 전달된 공개/비공개키를 계수(modulus), 지수(exponent) 및 {@link Base64#encodeBase64URLSafeString(byte[])}
      * 처리하여 할당한다.
      *
-     * @throws CryptoException
+     * @throws CryptoException 계수 및 지수 생성 실패
      * @see NoSuchAlgorithmException
      * @see InvalidKeySpecException
      */

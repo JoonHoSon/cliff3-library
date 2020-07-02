@@ -192,7 +192,8 @@ public class StringUtil {
     /**
      * 대상 문자열을 16진수(Hex) 형태로 변환하여 반환한다. {@code hasPrefix} 인자에 따라 접두어 <strong>0x</strong>를 함께 반환한다.
      *
-     * @param target 대상 문자열
+     * @param target    대상 문자열
+     * @param hasPrefix 접두어(<strong>0x</strong>) 출력 여부
      *
      * @return 16진수로 변환된 문자열
      * @throws IllegalArgumentException 대상 문자열이 없을 경우 발생

@@ -21,7 +21,7 @@ public class LocaleUtil {
      *
      * @param locale 대상 Locale
      *
-     * @return 유효성 여부
+     * @return 유효성
      */
     public static boolean isValidLocale(Locale locale) {
         if (locale == null) {
@@ -42,7 +42,7 @@ public class LocaleUtil {
      * @param languageCode 언어 코드
      * @param countryCode  나라 코드
      *
-     * @return 유효성 여부
+     * @return 유효성
      */
     public static boolean isValidLocale(final String languageCode, final String countryCode) {
         return isValidLocale(new Locale(languageCode, countryCode));
