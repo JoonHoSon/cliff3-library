@@ -10,3 +10,8 @@ script:
   - mvn install -N
   - mvn clean test
   - mvn package
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
