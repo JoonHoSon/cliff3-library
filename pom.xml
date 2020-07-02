@@ -5,8 +5,34 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.cliff3.maven</groupId>
     <artifactId>cliff3-library</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>cliff3-library</name>
+    <description>자주 사용하는 라이브러리</description>
+    <url>https://github.com/JoonHoSon</url>
+
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>JoonHo Son</name>
+            <email>joonho.son@me.com</email>
+            <timezone>GMT+0900</timezone>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/JoonHoSon/cliff3-library.git</connection>
+        <developerConnection>scm:git:https://github.com/JoonHoSon/cliff3-library.git</developerConnection>
+        <url>https://github.com/JoonHoSon/cliff3-library.git</url>
+        <tag>${project.version}</tag>
+    </scm>
 
     <modules>
         <module>common</module>
@@ -160,6 +186,20 @@
                                 <encoding>UTF-8</encoding>
                                 <show>private</show>
                             </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
                         </execution>
                     </executions>
                 </plugin>
