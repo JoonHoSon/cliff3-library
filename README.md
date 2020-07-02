@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/JoonHoSon/cliff3-library.svg?branch=develop)](https://travis-ci.org/JoonHoSon/cliff3-library)
+| master | develop |
+|:---:|:---:|
+| [![Build Status](https://travis-ci.org/JoonHoSon/cliff3-library.svg?branch=master)](https://travis-ci.org/JoonHoSon/cliff3-library) | [![Build Status](https://travis-ci.org/JoonHoSon/cliff3-library.svg?branch=develop)](https://travis-ci.org/JoonHoSon/cliff3-library) |
 
 # 참고 자료
 
