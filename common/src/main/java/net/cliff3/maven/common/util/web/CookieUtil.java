@@ -17,11 +17,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * CookieUtil
+ * 쿠키 관련 유틸리티
  *
  * @author JoonHo Son
- * @version 1.0.0 2019-12-16 최초 작성
- * @since 1.0.0
+ * @since 0.1.0
  */
 @Slf4j
 public class CookieUtil {

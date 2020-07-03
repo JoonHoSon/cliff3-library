@@ -16,8 +16,7 @@ import org.testng.annotations.Test;
  * CryptoUtilTest
  *
  * @author JoonHo Son
- * @version 1.0.0 2019-12-16 최초 작성
- * @since 1.0.0
+ * @since 0.1.0
  */
 @Slf4j
 @Test(groups = "cryptoUtilTest")

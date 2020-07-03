@@ -11,8 +11,7 @@ import org.testng.annotations.Test;
  * net.cliff3.maven.common.util.StringUtilTest
  *
  * @author JoonHo Son
- * @version 1.0.0 2020-06-26 최초 작성
- * @since 1.0.0
+ * @since 0.1.0
  */
 @Slf4j
 @Test(groups = "stringUtilTest")

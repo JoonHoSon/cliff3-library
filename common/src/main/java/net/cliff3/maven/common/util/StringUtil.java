@@ -14,8 +14,7 @@ import org.apache.commons.lang3.StringUtils;
  * 한글 초/중/종성 분리 관련 소스의 출처는 <a href="https://gs.saro.me/#!m=elec&jn836">가사시니</a> 입니다.
  *
  * @author JoonHo Son
- * @version 1.0.0 2020-06-26 최초 작성
- * @since 1.0.0
+ * @since 0.1.0
  */
 @Slf4j
 public class StringUtil {

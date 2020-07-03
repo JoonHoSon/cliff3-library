@@ -4,8 +4,7 @@ package net.cliff3.maven.common.util.crypto;
  * CryptoException
  *
  * @author JoonHo Son
- * @version 1.0.0 2019-12-13 최초 작성
- * @since 1.0.0
+ * @since 0.1.0
  */
 public class CryptoException extends RuntimeException {
     /**

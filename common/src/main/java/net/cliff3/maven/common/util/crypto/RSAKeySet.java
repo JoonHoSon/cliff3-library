@@ -16,8 +16,7 @@ import org.apache.commons.codec.binary.Base64;
  * RSAKeySet
  *
  * @author JoonHo Son
- * @version 1.0.0 2019-12-16 최초 작성
- * @since 1.0.0
+ * @since 0.1.0
  */
 public class RSAKeySet {
     /**

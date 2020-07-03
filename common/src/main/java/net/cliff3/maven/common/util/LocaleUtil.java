@@ -10,8 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  * 로케일 관련 유틸리티 클래스
  *
  * @author JoonHo Son
- * @version 1.0.0 2020-07-02 최초 작성
- * @since 1.0.0
+ * @since 0.1.0
  */
 @Slf4j
 public class LocaleUtil {

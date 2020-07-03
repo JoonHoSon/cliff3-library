@@ -11,8 +11,7 @@ import org.testng.annotations.Test;
  * LocaleUtilTest
  *
  * @author JoonHo Son
- * @version 1.0.0 2020-07-02 최초 작성
- * @since 1.0.0
+ * @since 0.1.0
  */
 @Test(groups = "LocaleUtilTest")
 public class LocaleUtilTest {
