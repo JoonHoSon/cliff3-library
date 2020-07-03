@@ -23,7 +23,7 @@ public class NumberUtil {
     public static int getRandomInteger(int min, int max) {
         // seed를 System.currentTimeMillis()로 지정할 경우 loop에서 같은 timestamp일 경우 동일한 값이 출력될 수 있음
         // 따라서 seed를 지정하지 않고 처리하도록 수정
-        
+
         Random random = new Random();
         int result = random.nextInt(max - min) + min + 1;
 
