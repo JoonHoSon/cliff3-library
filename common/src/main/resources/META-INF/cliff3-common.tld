@@ -16,22 +16,86 @@
         <tag-class>net.cliff3.maven.common.util.web.NewTag</tag-class>
         <body-content>scriptless</body-content>
         <attribute>
+            <description>비교 대상 일자</description>
             <name>compareDate</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.util.Date</type>
         </attribute>
         <attribute>
+            <description>기준값</description>
             <name>term</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.Integer</type>
         </attribute>
         <attribute>
+            <description>비교 대상 기준(NewTagType 참고)</description>
             <name>type</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>net.cliff3.maven.common.util.web.NewTag</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>대상 문자열을 지정된 길이만큼  뒤에서부터 마스킹 처리</description>
+        <name>makingTag</name>
+        <tag-class>net.cliff3.maven.common.util.web.MaskingTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>마스크 문자</description>
+            <name>mask</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>마스킹 처리 개수</description>
+            <name>maskingCount</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Integer</type>
+        </attribute>
+        <attribute>
+            <description>대상</description>
+            <name>target</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description>대상이 null 이거나 빈 값일 경우 출력 문자열(기본값은 빈 문자열)</description>
+            <name>empty</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>여부(참/거짓)에 해당하는 결과 출력</description>
+        <name>booleanTag</name>
+        <tag-class>net.cliff3.maven.common.util.web.BooleanTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>여부 판단 대상 값</description>
+            <name>status</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>참에 해당하는 문자열</description>
+            <name>trueValue</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>거짓에 해당하는 문자열</description>
+            <name>falseValue</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
         </attribute>
     </tag>
 </taglib>
