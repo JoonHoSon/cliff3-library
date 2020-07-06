@@ -98,4 +98,31 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    <tag>
+        <description>말줄임 처리</description>
+        <name>cutString</name>
+        <tag-class>net.cliff3.maven.common.util.web.CutStringTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>대상 문자열</description>
+            <name>target</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>출력할 문자열 길이</description>
+            <name>limit</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Integer</type>
+        </attribute>
+        <attribute>
+            <description>줄임표시</description>
+            <name>tail</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
 </taglib>
