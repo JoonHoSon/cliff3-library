@@ -100,7 +100,7 @@
     </tag>
     <tag>
         <description>말줄임 처리</description>
-        <name>cutString</name>
+        <name>cutStringTag</name>
         <tag-class>net.cliff3.maven.common.util.web.CutStringTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
@@ -120,6 +120,33 @@
         <attribute>
             <description>줄임표시</description>
             <name>tail</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>CKEditor 생성 스크립트 처리</description>
+        <name>ckEditorTag</name>
+        <tag-class>net.cliff3.maven.common.util.web.CKEditorDisplayTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>ckeditor.js 경로</description>
+            <name>ckPath</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>변환 대상 textarea id 속성들. 쉼표로 구분.</description>
+            <name>targets</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>CKEditor 사용자 설정 파일 위치(config.js). 미지정시 /assets/js/ckeditor/config.js 파일을 참조한다.</description>
+            <name>configPath</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
