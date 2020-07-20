@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * 긴 문자열을 지정한 길이와 지정된 줄임표시로 출력한다.
  *
  * @author JoonHo Son
- * @since 1.0.0
+ * @since 0.2.0
  */
 @Slf4j
 public class CutStringTag extends SimpleTagSupport {

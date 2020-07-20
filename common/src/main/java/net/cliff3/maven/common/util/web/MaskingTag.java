@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
  * 대상 문자열을 지정된 길이만큼 뒤에서부터 마스킹 처리
  *
  * @author JoonHo Son
- * @since 1.0.0
+ * @since 0.2.0
  */
 @Slf4j
 public class MaskingTag extends SimpleTagSupport {
