@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- version 20180725-1 -->
-<!--<config xmlns="http://www.nhncorp.com/lucy-xss" extends="lucy-xss-default.xml">-->
-<config xmlns="http://www.nhncorp.com/lucy-xss">
+
+<config xmlns="http://www.nhncorp.com/lucy-xss"
+        extends="lucy-xss-default.xml">
+
 	<elementRule>
-		<element name="body" disable="true" /> <!-- <BODY ONLOAD=alert("XSS")>, <BODY BACKGROUND="javascript:alert('XSS')"> -->
-        <element name="embed" disable="true" />
-		<element name="iframe" disable="true" /> <!-- <IFRAME SRC=”http://hacker-site.com/xss.html”> -->
-        <element name="meta" disable="true" />
+		<element name="body" disable="true" />
+		<element name="embed" disable="true" />
+		<element name="iframe" disable="true" />
+		<element name="meta" disable="true" />
 		<element name="object" disable="true" />
-		<element name="script" disable="true" /> <!-- <SCRIPT> alert(“XSS”); </SCRIPT> -->
-        <element name="style" disable="true" />
-		<element name="link" disable="true" />
-		<element name="base" disable="true" />
-		<element name="button" endTag="true">
-			<attributes>
-				<ref name="Attrs"/>
-				<ref name="name"/>
-				<ref name="value"/>
-				<ref name="type"/>
-				<ref name="disabled"/>
-				<ref name="tabindex"/>
-				<ref name="accesskey"/>
-				<ref name="Html5GlobalAttr"/>
-				<ref name="autofocus"/>
-				<ref name="form"/>
-				<ref name="formenctype"/>
-				<ref name="formmethod"/>
-				<ref name="formnovalidate"/>
-				<ref name="formtarget"/>
-			</attributes>
-		</element>
+		<element name="script" disable="true" />
+		<element name="style" disable="true" />
+        <element name="a" endTag="true">
+            <attributes>
+                <ref name="Attrs" />
+                <ref name="charset" />
+                <ref name="type" />
+                <ref name="name" />
+                <ref name="href" />
+                <ref name="hreflang" />
+                <ref name="rel" />
+                <ref name="rev" />
+                <ref name="accesskey" />
+                <ref name="shape" />
+                <ref name="coords" />
+                <ref name="tabindex" />
+                <ref name="target" />
+            </attributes>
+            <elements>
+                <ref name="Inline">
+                    <excludes>
+                        <ref name="a" />
+                    </excludes>
+                </ref>
+            </elements>
+        </element>
 	</elementRule>
+
 	<attributeRule>
 		<attribute name="data" base64Decoding="true">
-			<notAllowedPattern><![CDATA[(?i:s\\*c\\*r\\*i\\*p\\*t\\*:)]]></notAllowedPattern>
-			<notAllowedPattern><![CDATA[(?i:d\\*a\\*t\\*a\\*:)]]></notAllowedPattern>
+			<notAllowedPattern><![CDATA[(?i:s\\*c\\*r\\*i\\*p\\*t)]]></notAllowedPattern>
 			<notAllowedPattern><![CDATA[&[#\\%x]+[\da-fA-F][\da-fA-F]+]]></notAllowedPattern>
 		</attribute>
 		<attribute name="src" base64Decoding="true">
-			<notAllowedPattern><![CDATA[(?i:s\\*c\\*r\\*i\\*p\\*t\\*:)]]></notAllowedPattern>
-			<notAllowedPattern><![CDATA[(?i:d\\*a\\*t\\*a\\*:)]]></notAllowedPattern>
+			<notAllowedPattern><![CDATA[(?i:s\\*c\\*r\\*i\\*p\\*t)]]></notAllowedPattern>
 			<notAllowedPattern><![CDATA[&[#\\%x]+[\da-fA-F][\da-fA-F]+]]></notAllowedPattern>
 		</attribute>
 		<attribute name="style">
-			<notAllowedPattern><![CDATA[(?i:j\\*a\\*v\\*a\\*s\\*c\\*r\\*i\\*p\\*t\\*:)]]></notAllowedPattern>
 			<notAllowedPattern><![CDATA[(?i:e\\*x\\*p\\*r\\*e\\*s\\*s\\*i\\*o\\*n)]]></notAllowedPattern>
 			<notAllowedPattern><![CDATA[&[#\\%x]+[\da-fA-F][\da-fA-F]+]]></notAllowedPattern>
 		</attribute>
-		<attribute name="href">
-  			<notAllowedPattern><![CDATA[(?i:j\\*a\\*v\\*a\\*s\\*c\\*r\\*i\\*p\\*t\\*:)]]></notAllowedPattern>
-			<notAllowedPattern><![CDATA[&[#\\%x]+[\da-fA-F][\da-fA-F]+]]></notAllowedPattern>
- 		</attribute>
+        <attribute name="target" base64Decoding="true" />
 	</attributeRule>
 </config>

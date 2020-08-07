@@ -189,14 +189,7 @@ public class EscapeHTMLBeforeAdvice {
         if (StringUtils.isNotEmpty(configFileName)) {
             filter = XssFilter.getInstance(configFileName);
         } else {
-            URL configUrl = getClass().getClassLoader().getResource(DEFAULT_CONFIG);
-
-            if (configUrl != null) {
-                String fullPath = configUrl.getPath();
-                filter = XssFilter.getInstance(fullPath);
-            } else {
-                throw new NullPointerException();
-            }
+            filter = XssFilter.getInstance(DEFAULT_CONFIG, true);
         }
     }
 }
