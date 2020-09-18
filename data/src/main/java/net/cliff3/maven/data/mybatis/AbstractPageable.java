@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
  * AbstractPageable
  *
  * @author JoonHo Son
- * @since 1.0.0
+ * @since 0.3.0
  */
 @Slf4j
 public abstract class AbstractPageable {

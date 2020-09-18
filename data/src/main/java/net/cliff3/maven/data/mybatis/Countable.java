@@ -4,7 +4,7 @@ package net.cliff3.maven.data.mybatis;
  * 데이터의 노출 순서 처리를 위한 interface
  *
  * @author JoonHo Son
- * @since 1.0.0
+ * @since 0.3.0
  */
 public interface Countable {
     /**
