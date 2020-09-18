@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.cliff3.maven</groupId>
+    <groupId>net.cliff3</groupId>
     <artifactId>cliff3-library</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -23,6 +23,7 @@
         <developer>
             <name>JoonHo Son</name>
             <email>joonho.son@me.com</email>
+            <url>https://github.com/JoonHoson</url>
             <timezone>GMT+0900</timezone>
         </developer>
     </developers>
@@ -34,44 +35,37 @@
         <tag>${project.version}</tag>
     </scm>
 
+    <issueManagement>
+        <system>Github Issues</system>
+        <url>https://github.com/JoonHoSon/cliff3-library/issues</url>
+    </issueManagement>
+
     <modules>
         <module>common</module>
+        <module>validator</module>
+        <module>security</module>
+        <module>data</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.target>1.8</java.target>
         <java.source>1.8</java.source>
         <spring.version>4.3.25.RELEASE</spring.version>
+        <spring.security.version>4.2.18.RELEASE</spring.security.version>
         <github.global.server>github</github.global.server>
-        <!--
-        <bintray.repo>joonho78/net.cliff3.maven</bintray.repo>
-        <bintray.package>cliff3-library</bintray.package>
-        -->
     </properties>
 
-    <!--
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jcenter</id>
-            <name>JCenter</name>
-            <url>https://jcenter.bintray.com/</url>
-        </pluginRepository>
-    </pluginRepositories>
-    -->
-
     <distributionManagement>
-        <!--
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
         <repository>
-            <id>cliff3-library</id>
-            <url>https://api.bintray.com/maven/joonho78/net.cliff3.maven/cliff3-library/;publish=1</url>
-        </repository>
-        -->
-        <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/maven-repo</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
     </distributionManagement>
 
@@ -157,6 +151,11 @@
                 <artifactId>commons-io</artifactId>
                 <version>2.7</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.4</version>
+            </dependency>
 
             <!-- apache tika -->
             <dependency>
@@ -175,6 +174,16 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
                 <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring.security.version}</version>
             </dependency>
 
             <dependency>
@@ -196,6 +205,43 @@
                 <artifactId>aspectjweaver</artifactId>
                 <version>1.9.3</version>
             </dependency>
+
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>2.0.1.Final</version>
+            </dependency>
+
+            <!-- freemarker -->
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>2.3.30</version>
+            </dependency>
+
+            <!-- hibernate -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>5.3.9.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>6.0.16.Final</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.validation</groupId>
+                        <artifactId>validation-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>net.cliff3</groupId>
+                <artifactId>cliff3-common</artifactId>
+                <version>0.3.0-SNAPSHOT</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -209,6 +255,7 @@
                     <executions>
                         <execution>
                             <id>attach-source</id>
+                            <phase>verify</phase>
                             <goals>
                                 <goal>jar</goal>
                             </goals>
@@ -237,6 +284,7 @@
                     <executions>
                         <execution>
                             <id>attach-javadoc</id>
+                            <phase>verify</phase>
                             <goals>
                                 <goal>jar</goal>
                             </goals>
@@ -261,30 +309,7 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <groupId>com.github.github</groupId>
-                    <artifactId>site-maven-plugin</artifactId>
-                    <version>0.12</version>
-                    <configuration>
-                        <message>Creating site for ${project.version}</message>
-                        <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-                        <branch>refs/origin/mvn-repo</branch>
-                        <includes>
-                            <include>**/*</include>
-                        </includes>
-                        <repositoryName>cliff3-library</repositoryName>
-                        <repositoryOwner>JoonHoSon</repositoryOwner>
-                        <merge>true</merge>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>site</goal>
-                            </goals>
-                            <phase>site</phase>
-                        </execution>
-                    </executions>
-                </plugin>
+                <!--
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
@@ -293,6 +318,7 @@
                         <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
                     </configuration>
                 </plugin>
+                -->
             </plugins>
         </pluginManagement>
     </build>

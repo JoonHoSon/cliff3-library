@@ -11,3 +11,4 @@
 #*/target/surefire-reports
 #*/target/test-classes
 target
+local_install.sh

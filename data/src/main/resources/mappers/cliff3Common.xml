@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.cliff3.maven.data.mybatis">
+    <!-- MS SQL -->
+    <sql id="pagingHeaderSQL">
+		SELECT a.*
+		FROM   (
+	</sql>
+
+	<sql id="pagingFooterSQL">
+		) a
+
+		WHERE  rnum BETWEEN #{fromData} AND #{toData}
+	</sql>
+
+    <!-- MySQL -->
+    <sql id="pagingHeaderMySQL">
+		SELECT a.*
+		FROM   (
+	</sql>
+
+	<sql id="pagingFooterMySQL">
+		) AS a
+
+		LIMIT #{fromIndex}, #{dataPerPage}
+	</sql>
+
+    <!-- Oracle -->
+    <sql id="pagingHeaderOracle">
+		SELECT *
+		FROM   (
+		    SELECT a.*, ROWNUM AS rnum
+		    FROM  (
+	</sql>
+
+	<sql id="pagingFooterOracle">
+		    ) a
+
+		    WHERE  ROWNUM &lt;= #{toData}
+		)
+
+		WHERE  rnum &gt;= #{fromData}
+	</sql>
+</mapper>

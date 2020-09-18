@@ -17,7 +17,6 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.sun.org.apache.xml.internal.dtm.ref.CustomStringPool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mockito.Mock;
