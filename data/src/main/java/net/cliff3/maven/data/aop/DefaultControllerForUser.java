@@ -10,11 +10,9 @@ import net.cliff3.maven.security.model.AbstractUser;
  */
 public interface DefaultControllerForUser {
     /**
-     * 현재 사용자 정보를 반환
-     * <p>
-     * 주어진 인자에 따라 DB로부터 새로운 사용자 정보를 호출할 수 있다. 인자가 true일 경우에는 현재 세션에 저장된 사용자 정보를 무시하고 DB에서
-     * 새로운 사용자 정보를 조회하며, false일 경우 현재 세션에 저장된 사용자 정보를 조회하여 반환한다.
-     * </p>
+     * 현재 사용자 정보를 반환. 주어진 인자에 따라 DB로부터 새로운 사용자 정보를 호출할 수 있다. 인자가 true일 경우에는
+     * 현재 세션에 저장된 사용자 정보를 무시하고 DB에서 새로운 사용자 정보를 조회하며,
+     * false일 경우 현재 세션에 저장된 사용자 정보를 조회하여 반환하도록 구현한다.
      *
      * @param forceReloadInCurrentSession 현재 세션에 저장된 정보가 아닌 DB로 부터 새로운 사용자 정보를 호출할지 여부
      *

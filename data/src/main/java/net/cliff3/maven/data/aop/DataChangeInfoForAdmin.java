@@ -3,11 +3,15 @@ package net.cliff3.maven.data.aop;
 import net.cliff3.maven.security.model.AbstractUser;
 
 /**
- * 데이터 변경 관련 정보 처리
+ * 데이터 변경 관련 정보 처리. {@link AbstractUser}를 상속한 사용자 정보를 반환 및 할당한다.
  *
  * @author JoonHo Son
- * @since 0.3.0
  * @see AbstractUser
+ * @see DefaultControllerForUser
+ * @see DataTargetAdmin
+ * @see DataTargetUser
+ * @see DefaultDataChangeBeforeAdvice
+ * @since 0.3.0
  */
 public interface DataChangeInfoForAdmin<T extends AbstractUser> {
     /**
@@ -15,26 +19,26 @@ public interface DataChangeInfoForAdmin<T extends AbstractUser> {
      *
      * @return 등록자
      */
-    public T getCreatedByAdmin();
+    T getCreatedByAdmin();
 
     /**
      * 등록자 지정
      *
      * @param user 등록자
      */
-    public void setCreatedByAdmin(AbstractUser user);
+    void setCreatedByAdmin(AbstractUser user);
 
     /**
      * 수정자 반환
      *
      * @return 수정자
      */
-    public T getUpdatedByAdmin();
+    T getUpdatedByAdmin();
 
     /**
      * 수정자 지정
      *
      * @param user 수정자
      */
-    public void setUpdatedByAdmin(AbstractUser user);
+    void setUpdatedByAdmin(AbstractUser user);
 }
