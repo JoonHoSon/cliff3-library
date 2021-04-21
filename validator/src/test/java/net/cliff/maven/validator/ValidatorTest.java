@@ -13,6 +13,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
 import net.cliff3.maven.validator.AtLeastCheck;
 import net.cliff3.maven.validator.CascadeNotEmpty;
+import net.cliff3.maven.validator.CellularCheck;
 import net.cliff3.maven.validator.CompareValue;
 import net.cliff3.maven.validator.Insert;
 import net.cliff3.maven.validator.Update;
@@ -99,5 +100,42 @@ public class ValidatorTest extends AbstractTestNGSpringContextTests {
         violations = validator.validate(parent, Update.class);
 
         assertEquals(violations.toArray().length, 0, "하위 객체 필드 not empty check 실패(입력값 있음)");
+    }
+
+    /**
+     * {@link CellularCheck} test
+     */
+    @Test
+    public void cellularCheckTest() {
+        SimplePojo pojo = new SimplePojo();
+        Set<ConstraintViolation<Object>> violations = validator.validate(pojo, Insert.class);
+
+        assertEquals(violations.toArray().length, 0, "휴대전화번호 테스트 실패(미입력. 필수입력 아님)");
+
+        pojo.setCellularNumber("010-12-3456");
+
+        violations = validator.validate(pojo, Insert.class);
+
+        assertEquals(violations.toArray().length, 1, "휴대전화번호 테스트 실패(가운데 2자리)");
+
+        pojo.setCellularNumber("012-123-4567");
+        violations = validator.validate(pojo, Insert.class);
+
+        assertEquals(violations.toArray().length, 1, "휴대전화번호 테스트 실패(012)");
+
+        pojo.setCellularNumber("    ");
+        violations = validator.validate(pojo, Insert.class);
+
+        assertEquals(violations.toArray().length, 0, "휴대전화번호 테스트 실패(공백. 필수입력 아님)");
+
+        violations = validator.validate(pojo, Update.class);
+
+        assertEquals(violations.toArray().length, 1, "휴대전화번호 테스트 실패(미입력. 필수)");
+
+        pojo.setRequiredNumber("  ");
+
+        violations = validator.validate(pojo, Update.class);
+
+        assertEquals(violations.toArray().length, 1, "휴대전화번호 테스트 실패(공백. 필수)");
     }
 }
