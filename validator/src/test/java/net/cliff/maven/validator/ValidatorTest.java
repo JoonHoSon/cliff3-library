@@ -10,6 +10,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
 import net.cliff3.maven.validator.AtLeastCheck;
 import net.cliff3.maven.validator.CascadeNotEmpty;
@@ -137,5 +138,68 @@ public class ValidatorTest extends AbstractTestNGSpringContextTests {
         violations = validator.validate(pojo, Update.class);
 
         assertEquals(violations.toArray().length, 1, "휴대전화번호 테스트 실패(공백. 필수)");
+    }
+
+    @Test
+    public void emailCheckTest() {
+        SimpleEmail email = new SimpleEmail();
+
+        // email2(not required) 확인
+        Set<ConstraintViolation<Object>> violations = validator.validate(email, Update.class);
+
+        assertEquals(violations.toArray().length, 0, "필수가 아닌 입력값에 대한 테스트 실패");
+
+        violations = validator.validate(email, Insert.class); // reuqired test
+
+        assertEquals(violations.toArray().length, 1, "필수 입력값에 대한 테스트 실패");
+
+        email.setEmail1("wrong_email@test");
+
+        violations = validator.validate(email, Insert.class);
+
+        assertEquals(violations.toArray().length, 1, String.format("잘못된 이메일 주소 테스트 실패(%s)", email.getEmail1()));
+
+        email.setEmail1("valid-email@apple.com");
+
+        violations = validator.validate(email, Insert.class);
+
+        assertEquals(violations.toArray().length, 0, String.format("유효한 이메일 주소 테스트 실패(%s)", email.getEmail1()));
+    }
+
+    @Test
+    public void urlCheckTest() {
+        SampleUrl url = new SampleUrl();
+        Set<ConstraintViolation<Object>> violations = validator.validate(url, Insert.class);
+
+        // url1, required
+        assertEquals(violations.toArray().length, 1, "필수 입력값 테스트 실패(url1)");
+
+        // url1, wrong pattern
+        url.setUrl1("http://with_underscore.dmain.com");
+
+        violations = validator.validate(url, Insert.class);
+
+        assertEquals(violations.toArray().length, 1, String.format("잘못된 URL 주소 테스트 실패(%s)", url.getUrl1()));
+
+        // url1. valid pattern
+        url.setUrl1("http://test@1111.daum.net");
+
+        violations = validator.validate(url, Insert.class);
+
+        assertEquals(violations.toArray().length, 0, String.format("유효한 URL 주소 테스트 실패(%s)", url.getUrl1()));
+
+        // url2, blank string
+        url.setUrl2("    ");
+
+        violations = validator.validate(url, Update.class);
+
+        assertEquals(violations.toArray().length, 1, "빈 문자열 형식 URL 주소 테스트 실패");
+
+        // url1, url2 valid pattern
+        url.setUrl2("https://www.google.com/search?q=jsr-303+java&client=safari&rls=en&sxsrf=ALeKk038NKP01RI1K3pfl08o4KhNGVh03g:1620368991762&source=lnt&tbs=li:1&sa=X&ved=2ahUKEwjhu6Lx-LbwAhWrGKYKHSGIAQQQpwV6BAgBEDA&biw=1680&bih=917");
+
+        violations = validator.validate(url, Insert.class, Update.class);
+
+        assertEquals(violations.toArray().length, 0, "URL 유효성 검사 실패");
     }
 }

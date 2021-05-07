@@ -2,24 +2,24 @@ package net.cliff.maven.validator;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.cliff3.maven.validator.CellularCheck;
+import net.cliff3.maven.validator.EmailCheck;
 import net.cliff3.maven.validator.Insert;
 import net.cliff3.maven.validator.Update;
 
 /**
- * SimplePojo
+ * SimpleEmail
  *
  * @author JoonHo Son
  * @since 1.0.0
  */
-public class SimplePojo {
+public class SimpleEmail {
     @Getter
     @Setter
-    @CellularCheck(groups = {Insert.class})
-    private String cellularNumber;
+    @EmailCheck(groups = Insert.class, required = true)
+    private String email1;
 
     @Getter
     @Setter
-    @CellularCheck(groups = {Update.class}, required = true)
-    private String requiredNumber;
+    @EmailCheck(groups = Update.class)
+    private String email2;
 }
