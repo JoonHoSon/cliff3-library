@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.target>1.8</java.target>
         <java.source>1.8</java.source>
-        <spring.version>4.3.25.RELEASE</spring.version>
+        <spring.version>5.2.20.RELEASE</spring.version>
         <bintray.repo>joonho78/net.cliff3.maven</bintray.repo>
         <bintray.package>cliff3-library</bintray.package>
     </properties>
