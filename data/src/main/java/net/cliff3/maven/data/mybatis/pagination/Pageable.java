@@ -1,4 +1,4 @@
-package net.cliff3.maven.data.mybatis;
+package net.cliff3.maven.data.mybatis.pagination;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

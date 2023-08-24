@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
  * Http protocol url 형식 유효성 확인. 입력값이 없을 경우(null) 필수 상태일 경우는 false, 필수가 아닐 경우에는 true를 반환.
  *
  * @author JoonHo Son
+ * @see UrlCheckValidator
  * @since 0.3.0
  */
 @Documented

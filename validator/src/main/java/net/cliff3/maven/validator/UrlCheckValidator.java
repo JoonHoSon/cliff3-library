@@ -2,15 +2,13 @@ package net.cliff3.maven.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Http protocol url 형식 유효성 확인. 입력값이 없을 경우(null) 필수 상태일 경우는 false, 필수가 아닐 경우에는 true를 반환.
  *
  * @author JoonHo Son
+ * @see UrlCheck
  * @since 0.3.0
  */
 public class UrlCheckValidator implements ConstraintValidator<UrlCheck, String> {
@@ -32,7 +30,7 @@ public class UrlCheckValidator implements ConstraintValidator<UrlCheck, String> 
         }
 
         if (value == null) {
-        	return false;
+            return false;
         }
 
         return PATTERN.matcher(value).matches();

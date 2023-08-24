@@ -1,4 +1,4 @@
-package net.cliff3.maven.data.mybatis;
+package net.cliff3.maven.data.mybatis.pagination;
 
 /**
  * 페이징 처리 정보를 제공하는 {@link ThreadLocal} 인스턴스
@@ -7,6 +7,18 @@ package net.cliff3.maven.data.mybatis;
  * @since 0.3.0
  */
 public class Pagination {
+    /**
+     * 현재 페이지 번호 key
+     */
+    public static final String currentPageKey = "currentPage";
+
+    /**
+     * 한 페이지당 출력 개수 key
+     */
+    public static final String dataPerPageKey = "dataPerPage";
+
+//    public static final String PAGE_COUNT
+
     /**
      * 현재 페이지 번호
      */
@@ -34,7 +46,9 @@ public class Pagination {
 
     /**
      * 이전 페이지
+     * @deprecated  삭제 예정
      */
+    @Deprecated
     public static ThreadLocal<String> referer = new ThreadLocal<>();
 
     public static void resetAll() {

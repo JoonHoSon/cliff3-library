@@ -6,9 +6,9 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import net.cliff3.maven.data.mybatis.AbstractPageable;
-import net.cliff3.maven.data.mybatis.Countable;
-import net.cliff3.maven.data.mybatis.Pageable;
-import net.cliff3.maven.data.mybatis.Pagination;
+import net.cliff3.maven.data.mybatis.pagination.Countable;
+import net.cliff3.maven.data.mybatis.pagination.Pageable;
+import net.cliff3.maven.data.mybatis.pagination.Pagination;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 

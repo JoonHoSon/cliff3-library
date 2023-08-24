@@ -1,4 +1,4 @@
-package net.cliff3.maven.data.mybatis;
+package net.cliff3.maven.data.mybatis.pagination;
 
 /**
  * 데이터의 노출 순서 처리를 위한 interface

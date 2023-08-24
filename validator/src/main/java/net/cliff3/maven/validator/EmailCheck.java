@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
  * 이메일 유효성 검사. 필수 입력이 아닐 경우 입력값이 없으면(null, blank) true 반환. 필수일 경우 false 반환
  *
  * @author JoonHo Son
+ * @see EmailCheckValidator
  * @since 1.0.0
  */
 @Documented

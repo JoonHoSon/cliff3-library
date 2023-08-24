@@ -1,9 +1,10 @@
-package net.cliff3.maven.data.mybatis;
+package net.cliff3.maven.data.mybatis.pagination;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import net.cliff3.maven.data.mybatis.AbstractPageable;
 
 /**
  * 페이징 처리

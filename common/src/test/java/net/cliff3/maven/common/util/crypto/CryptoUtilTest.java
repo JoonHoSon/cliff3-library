@@ -32,6 +32,9 @@ public class CryptoUtilTest {
         Optional<byte[]> _result = CryptoUtil.makeSHA256Hash(SOURCE_KOREAN);
 
         assertTrue(_result.isPresent(), "SHA256 암호화 실패");
+
+        log.debug("encrypted result : {}", Base64.encodeBase64String(_result.get()));
+        log.debug("encrypted result length : {}", Base64.encodeBase64String(_result.get()).length());
     }
 
     @Test

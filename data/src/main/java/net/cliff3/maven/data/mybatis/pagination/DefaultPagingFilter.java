@@ -1,4 +1,4 @@
-package net.cliff3.maven.data.filter;
+package net.cliff3.maven.data.mybatis.pagination;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -12,8 +12,8 @@ import java.util.Map;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import lombok.Setter;
-import net.cliff3.maven.data.mybatis.PagerTool;
-import net.cliff3.maven.data.mybatis.Pagination;
+import net.cliff3.maven.data.mybatis.pagination.PagerTool;
+import net.cliff3.maven.data.mybatis.pagination.Pagination;
 import org.apache.commons.lang3.StringUtils;
 
 /**
