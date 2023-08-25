@@ -9,8 +9,10 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author JoonHo Son
  * @since 0.2.0
+ * @deprecated {@link NumberUtilsKt}로 전환
  */
 @Slf4j
+@Deprecated
 public class NumberUtil {
     /**
      * 지정된 범위 내에서 임의의 정수형 숫자를 반환한다.

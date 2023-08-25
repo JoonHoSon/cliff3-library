@@ -1,12 +1,9 @@
 package net.cliff3.maven.common.util
 
 import net.cliff3.maven.common.logger
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
+import org.junit.jupiter.api.Assertions.assertThrows
 import java.util.Locale
 
 @TestMethodOrder(MethodOrderer.MethodName::class)
@@ -55,5 +52,76 @@ class CommonUtilsTest {
 
             assertTrue(result in min..max)
         }
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("이메일 유효성 검사")
+    fun isValidEmailTest() {
+        var validEmail = "test@test.com"
+
+        assertTrue(isValidEmail(validEmail, true))
+
+        validEmail = "test.man@test.co.kr"
+
+        assert(isValidEmail(validEmail))
+
+        var invalidEmail = "test@test"
+
+        assertFalse(isValidEmail(invalidEmail))
+
+        invalidEmail = "test-man@test."
+
+        assertFalse(isValidEmail(invalidEmail))
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("URL 유효성 검사")
+    fun isValidURLTest() {
+        var validURL = "http://www.daum.net"
+
+        assertTrue(isValidURL(validURL))
+
+        validURL = "http://www.test.xy"
+
+        assertTrue(isValidURL(validURL))
+
+        validURL = "https://www.test.com/?q=한글"
+
+        assertTrue(isValidURL(validURL))
+
+        var invalidURL = "ftp://daum.net"
+
+        assertFalse(isValidURL(invalidURL))
+
+        invalidURL = "htp://daum.net"
+
+        assertFalse(isValidURL(invalidURL))
+
+        invalidURL = "http//daum.net"
+
+        assertFalse(isValidURL(invalidURL))
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("화폐단위 출력 테스트")
+    fun formatCurrencyTest() {
+        val source = "127598000"
+        val compare1 = "127,598,000"
+        val compare2 = "127,598,000.000"
+
+        assertEquals(compare1, source.formatCurrency())
+
+        assertThrows(NumberFormatException::class.java, {
+            "abc".formatCurrency()
+        }, "예외 오류 반환 실패")
+
+        assertEquals(compare2, source.formatCurrency(3))
+
+        assertThrows(NumberFormatException::class.java, {
+            "abc".formatCurrency(precision = 2)
+        }, "예외 오류 반환 실패")
     }
 }
