@@ -57,6 +57,7 @@
         <spring.security.version>4.2.18.RELEASE</spring.security.version>
         <github.global.server>github</github.global.server>
         <kotlin.version>1.9.10</kotlin.version>
+        <junit.version>5.10.0</junit.version>
     </properties>
 
     <distributionManagement>
@@ -95,13 +96,7 @@
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
-                <version>RELEASE</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>RELEASE</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
             <!-- TODO(joonho): 2023-08-25 testng 제거 -->
