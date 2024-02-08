@@ -4,6 +4,7 @@ kotlinVersion = "1.9.22"
 slf4jVersion = "2.0.11"
 junitVersion = "5.10.0"
 springVersion = "5.3.31"
+commonsLang3Version = "3.14.0"
 
 [plugins]
 kotlinPlugin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }
@@ -15,6 +16,7 @@ logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4jVersion" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitVersion" }
 spring-test = { group = "org.springframework", name = "spring-test", version.ref = "springVersion" }
+commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commonsLang3Version"}
 
 [bundles]
 logback-bundle = ["logback-core", "logback-classic"]
