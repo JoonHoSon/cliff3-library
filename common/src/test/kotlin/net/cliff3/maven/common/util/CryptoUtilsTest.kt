@@ -37,6 +37,8 @@ class CryptoUtilsTest {
     @Order(2)
     @DisplayName("AES test")
     fun aesTest() {
+        topLogger.debug("Start AES encrypt/decrypt test")
+
         val plainText = "This 이것 That 저것"
         val secret = "SeCrEt"
         val result1: AESResult? = encryptAES128(plainText, secret)
