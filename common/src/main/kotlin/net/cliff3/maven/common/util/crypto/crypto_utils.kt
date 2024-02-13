@@ -14,6 +14,13 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 
+/**
+ * 암호화 관련 함수 모음.
+ *
+ * @author JoonHo Son
+ * @since 0.3.0
+ */
+
 enum class Transformation(val transformation: String) {
     /**
      * RSA/ECB/PKCS1Padding
@@ -256,10 +263,20 @@ private fun encryptAES(
 
 /**
  * AES 복호화 처리. 복호화 결과를 {@code byte[]} 형태로 반환한다.
+ * 다음의 경우 내부적으로 [javax.crypto.BadPaddingException]이 발생하여 호출하는 함수에 [CryptoException] 예외를 발생 시킨다.
+ *
+ * * 암호화시 지정한 `repeatCount`와 복호화시 값이 불일치 할 경우
+ * * 암호화시 저정한 `secret`과 복호화시 지정한 값이 불일치 할 경우
+ * * 암호화시 지정한 `salt`와 복호화시 지정한 값이 불일치 할 경우
+ *
+ * 다음의 경우 내부적으로 [java.security.InvalidAlgorithmParameterException]이 발생하여 호출하는 함수에 [CryptoException]
+ * 예외를 발생시킨다.
+ *
+ * * 암호화시 지정한 `iv`와 복호화시 지정한 값이 불일치 할 경우
  *
  * @param target  복호화 대상
  * @param secret  암호화키
- * @param ivBytes initial vector
+ * @param iv initial vector
  * @param salt    salt
  * @param keySize 키 사이즈
  * @param repeatCount 반복 횟수
@@ -356,6 +373,72 @@ fun encryptAES256(
 ): AESResult? {
     return target?.let {
         return encryptAES(target, secret, KEY_256, salt, repeatCount)
+    }
+}
+
+/**
+ * `AES128`로 복호화. [decryptAES] 참고.
+ * 다음의 경우 내부적으로 [javax.crypto.BadPaddingException]이 발생하여 호출하는 함수에 [CryptoException] 예외를 발생 시킨다.
+ *
+ * * 암호화시 지정한 `repeatCount`와 복호화시 값이 불일치 할 경우
+ * * 암호화시 저정한 `secret`과 복호화시 지정한 값이 불일치 할 경우
+ * * 암호화시 지정한 `salt`와 복호화시 지정한 값이 불일치 할 경우
+ *
+ * 다음의 경우 내부적으로 [java.security.InvalidAlgorithmParameterException]이 발생하여 호출하는 함수에 [CryptoException]
+ * 예외를 발생시킨다.
+ *
+ * * 암호화시 지정한 `iv`와 복호화시 지정한 값이 불일치 할 경우
+ *
+ * @param target 복호화 대상
+ * @param secret 암호화키
+ * @param iv Initial vector
+ * @param salt salt
+ * @param repeatCount 반복 횟수
+ * @see [decryptAES]
+ * @return 복화화된 평문 바이트 배열
+ */
+fun decryptAES128(
+    target: ByteArray?,
+    secret: String,
+    iv: ByteArray,
+    salt: ByteArray,
+    repeatCount: Int?
+): ByteArray? {
+    return target?.let {
+        return decryptAES(it, secret, KEY_128, iv, salt, repeatCount ?: DEFAULT_REPEAT_COUNT)
+    }
+}
+
+/**
+ * `AES256`으로 복호화. [decryptAES] 참고.
+ * 다음의 경우 내부적으로 [javax.crypto.BadPaddingException]이 발생하여 호출하는 함수에 [CryptoException] 예외를 발생 시킨다.
+ *
+ * * 암호화시 지정한 `repeatCount`와 복호화시 값이 불일치 할 경우
+ * * 암호화시 저정한 `secret`과 복호화시 지정한 값이 불일치 할 경우
+ * * 암호화시 지정한 `salt`와 복호화시 지정한 값이 불일치 할 경우
+ *
+ * 다음의 경우 내부적으로 [java.security.InvalidAlgorithmParameterException]이 발생하여 호출하는 함수에 [CryptoException]
+ * 예외를 발생시킨다.
+ *
+ * * 암호화시 지정한 `iv`와 복호화시 지정한 값이 불일치 할 경우
+ *
+ * @param target 복호화 대상
+ * @param secret 암호화키
+ * @param iv Initial vector
+ * @param salt salt
+ * @param repeatCount 반복 횟수
+ * @see [decryptAES]
+ * @return 복화화된 평문 바이트 배열
+ */
+fun decryptAES256(
+    target: ByteArray?,
+    secret: String,
+    iv: ByteArray,
+    salt: ByteArray,
+    repeatCount: Int?
+): ByteArray? {
+    return target?.let {
+        return decryptAES(it, secret, KEY_256, iv, salt, repeatCount ?: DEFAULT_REPEAT_COUNT)
     }
 }
 

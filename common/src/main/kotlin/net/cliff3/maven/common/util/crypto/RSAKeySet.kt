@@ -10,8 +10,11 @@ import java.util.*
 /**
  * RSAKeySet
  *
+ * [encryptRSA]로 생성된 결과
+ *
  * @author JoonHo Son
  * @since 0.3.0
+ * @see encryptRSA
  */
 class RSAKeySet {
     /**
