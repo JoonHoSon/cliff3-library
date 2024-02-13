@@ -9,6 +9,18 @@ plugins {
     alias(libs.plugins.kotlinPlugin)
 }
 
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
 // 프로젝트 전역 속성 정의
 allprojects {
     group = "net.cliff3"
