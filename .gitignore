@@ -6,4 +6,4 @@
 target
 local_install.sh
 .gradle
-common/build
+build
