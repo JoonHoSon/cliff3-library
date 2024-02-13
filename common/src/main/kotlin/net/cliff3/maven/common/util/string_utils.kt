@@ -303,3 +303,21 @@ fun String.formatCurrency(precision: Int = 1): String? {
 
     return formatter.format(this.toDouble())
 }
+
+/**
+ * 대상 바이트 배열을 16진수 형태로 변환
+ *
+ * @param target 16진수로 변경 하고자 하는 대상 바이트 배열
+ * @return 16진수 형태로 변환된 문자열
+ */
+fun toHexString(target: ByteArray?): String? {
+    return target?.let {
+        val builder: StringBuilder = StringBuilder()
+
+        for (byte in target) {
+            builder.append(String.format("%02x", byte))
+        }
+
+        return "$builder"
+    }
+}
