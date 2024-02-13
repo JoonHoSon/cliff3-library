@@ -118,7 +118,7 @@ private const val RSA_KEY_SIZE = 2048
 // -----------------------------------------------------------------------------------------------------------------
 
 /**
- * SHA256 hash 처리. 대상 문자열이 없을 경우 **null**을 반환하며 [NoSuchAlgorithmException]
+ * SHA256 hash 처리. 대상 문자열이 없을 경우 `null`을 반환하며 [NoSuchAlgorithmException]
  * 발생시 [CryptoException] 예외를 발생시킨다.
  *
  * @param target      Hash 처리 대상 문자열
@@ -163,7 +163,7 @@ fun makeSHA256Hash(target: String?, salt: ByteArray?, repeatCount: Int = DEFAULT
 /**
  * [makeSHA256Hash] 참고. 반복횟수는 [DEFAULT_REPEAT_COUNT]로 설정된다.
  *
- * 반복 횟수는 [DEFAULT_REPEAT_COUNT]로 설정되며, **salt**는 `null`로 설정함.
+ * 반복 횟수는 [DEFAULT_REPEAT_COUNT]로 설정되며, `salt`는 `null`로 설정함.
  *
  * @param target Hash 처리 대상 문자열
  *
@@ -199,7 +199,7 @@ fun makeSHA256Hash(target: String?, salt: ByteArray?): ByteArray? {
 
 /**
  * AES 암호화 처리. 인자로 지정된 keySize 기반으로 암호화 처리를 하며, 해당 결과는 [AESResult] 인스턴스로 반환한다.
- * 대상 문자열이 존재하지 않을 경우 null을 반환한다.
+ * 대상 문자열이 존재하지 않을 경우 `null`을 반환한다.
  *
  * @param target  대상 문자열
  * @param secret  암호화키
@@ -244,7 +244,7 @@ private fun encryptAES(
 
         val parameter: AlgorithmParameters = cipher.parameters
         val ivBytes: ByteArray = parameter.getParameterSpec(IvParameterSpec::class.java).iv
-        val encrypted: ByteArray = cipher.doFinal(target?.toByteArray(CHAR_SET))
+        val encrypted: ByteArray = cipher.doFinal(target.toByteArray(CHAR_SET))
 
         return AESResult(salt, encrypted, ivBytes, repeatCount)
     } catch (e: Throwable) {
@@ -509,6 +509,8 @@ fun decryptRSA(target: ByteArray?, privateKey: ByteArray): ByteArray? {
  * @param keySet [RSAKeySet]
  *
  * @return 복호화 결과
+ * @see [RSAKeySet]
+ * @see [decryptRSA]
  */
 fun decryptRSA(target: ByteArray?, keySet: RSAKeySet): ByteArray? {
     return decryptRSA(target, keySet.privateKey.encoded)

@@ -29,7 +29,7 @@ enum class DirPathPolicy {
 
 /**
  * 인자로 전달되는 [DirPathPolicy]를 기준으로 디렉토리 문자열을 생성 후 반환
- * 두 번째 인자(`split`)이 **true**일 경우 각 하위 경로 표시 방법은 [File.separator]로 처리하며
+ * 두 번째 인자(`split`)이 `true`일 경우 각 하위 경로 표시 방법은 [File.separator]로 처리하며
  * 반대의 경우 단순 문자열 형태로 반환한다
  *
  *

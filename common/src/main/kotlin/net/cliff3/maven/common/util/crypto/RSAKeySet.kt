@@ -11,7 +11,7 @@ import java.util.*
  * RSAKeySet
  *
  * @author JoonHo Son
- * @since 1.0.0
+ * @since 0.3.0
  */
 class RSAKeySet {
     /**
@@ -61,7 +61,7 @@ class RSAKeySet {
         private set
 
     /**
-     * 공개/개인키 및 각 계수(modulus) 및 지수(exponent)의 문자열(16진수 형태) 처리 여부. 해당 값이 **true**일 경우 16진수 형태의
+     * 공개/개인키 및 각 계수(modulus) 및 지수(exponent)의 문자열(16진수 형태) 처리 여부. 해당 값이 `true`일 경우 16진수 형태의
      * 공개/개인키 및 각 계수 및 지수를 생성한다.
      */
     var isKeyToHexString: Boolean = false
@@ -120,7 +120,12 @@ class RSAKeySet {
      * @param privateKeyExponent 16진수로 구성된 개인키 계수
      */
     @Throws(CryptoException::class)
-    constructor(publicKeyModulus: String, publicKeyExponent: String, privateKeyModulus: String, privateKeyExponent: String) {
+    constructor(
+        publicKeyModulus: String,
+        publicKeyExponent: String,
+        privateKeyModulus: String,
+        privateKeyExponent: String
+    ) {
         this.publicKeyModulus = publicKeyModulus
         this.publicKeyExponent = publicKeyExponent
         this.privateKeyModulus = privateKeyModulus

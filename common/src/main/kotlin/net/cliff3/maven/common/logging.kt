@@ -9,6 +9,5 @@ import org.slf4j.LoggerFactory
  * @author JoonHo Son
  * @since 0.3.0
  */
-
 inline fun <reified T> T.logger() = LoggerFactory.getLogger(T::class.java)!!
 val topLogger: Logger = LoggerFactory.getLogger(object {}::class.java.`package`.name)
