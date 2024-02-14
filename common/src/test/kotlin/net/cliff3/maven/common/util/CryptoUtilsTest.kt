@@ -2,10 +2,13 @@ package net.cliff3.maven.common.util
 
 import net.cliff3.maven.common.topLogger
 import net.cliff3.maven.common.util.crypto.*
+import org.apache.commons.lang3.StringUtils
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
+import java.math.BigInteger
 import java.nio.charset.StandardCharsets
 import java.security.InvalidAlgorithmParameterException
+import java.security.KeyPair
 import javax.crypto.BadPaddingException
 
 @TestMethodOrder(MethodOrderer.MethodName::class)
@@ -106,5 +109,59 @@ class CryptoUtilsTest {
 
         assertNotNull(decrypted2, "AES256 복호화 실패")
         assertEquals(String(decrypted2!!, StandardCharsets.UTF_8), plainText, "AES256 복호화 실패(일치하지 않음)")
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("RSA test")
+    fun rsaTest() {
+        topLogger.debug("Start RSA encrypt/decrypt test")
+
+        val plainText = "This 이것 That 저것"
+        val keyPair: KeyPair = generateRSAKeyPair()
+        val result1: ByteArray? = encryptRSA(plainText.toByteArray(StandardCharsets.UTF_8), keyPair.public.encoded)
+
+        assertNotNull(result1, "RSA 암호화 실패")
+
+        val decrypted1: ByteArray? = decryptRSA(result1, keyPair.private.encoded)
+
+        assertNotNull(decrypted1, "RSA 복호화 실패")
+        assertEquals(String(decrypted1!!, StandardCharsets.UTF_8), plainText, "RSA 복호화 실패(일치하지 않음)")
+
+        topLogger.debug("decrypted1 : {}", String(decrypted1, StandardCharsets.UTF_8))
+
+        val result2: RSAKeySet? = encryptRSA(plainText.toByteArray(StandardCharsets.UTF_8), makeExtra = true)
+
+        assertNotNull(result2, "RSA 암호화 실패")
+        assertNotNull(result2!!.publicKey, "RSA 공개키 저장 실패")
+        assertTrue(StringUtils.isNotBlank(result2.publicKeyString), "RSA 공개키 base64 문자열 저장 실패")
+        assertTrue(StringUtils.isNotBlank(result2.publicKeyExponent), "RSA 공개키 지수 저장 실패")
+        assertTrue(StringUtils.isNotBlank(result2.publicKeyModulus), "RSA 공개키 계수 저장 실패")
+        assertNotNull(result2.privateKey, "RSA 개인키 저장 실패")
+        assertTrue(StringUtils.isNotBlank(result2.privateKeyString))
+        assertTrue(StringUtils.isNotBlank(result2.privateKeyExponent), "RSA 개인키 base64 문자열 저장 실패")
+        assertTrue(StringUtils.isNotBlank(result2.privateKeyModulus), "RSA 개인키 계수 저장 실패")
+
+        topLogger.debug("public key string : {}", result2.publicKeyString)
+        topLogger.debug("public key exponent : {}", result2.publicKeyExponent)
+        topLogger.debug("public key exponent(int) : {}", BigInteger(result2.publicKeyExponent, 16))
+        topLogger.debug("public key modulus : {}", result2.publicKeyModulus)
+        topLogger.debug("private key string : {}", result2.privateKeyString)
+        topLogger.debug("private key exponent : {}", result2.privateKeyExponent)
+        topLogger.debug("private key modulus : {}", result2.privateKeyModulus)
+
+        val keySet: RSAKeySet = RSAKeySet(
+            publicKeyModulus = result2.publicKeyModulus!!,
+            publicKeyExponent = result2.publicKeyExponent!!,
+            privateKeyModulus = result2.privateKeyModulus!!,
+            privateKeyExponent = result2.privateKeyExponent!!,
+            makeEncodedString = true
+        )
+
+        assertNotNull(keySet, "RSA 지수/계수를 이용한 인스턴스 생성 실패")
+        assertNotNull(keySet.privateKey, "RSA 지수/계수를 이용한 인스턴스 생성시 개인키 지정 실패")
+        assertTrue(StringUtils.isNotBlank(keySet.privateKeyString), "RSA 지수/계수를 이용한 인스턴스 생성시 개인키 base64 문자열 지정 실패")
+        assertNotNull(keySet.publicKey, "RSA 지수/계수를 이용한 인스턴스 생성시 공개키 지정 실패")
+        assertTrue(StringUtils.isNotBlank(keySet.publicKeyString), "RSA 지수/계수를 이용한 인스턴스 생성시 공개키 base64 문자열 지정 실패")
     }
 }

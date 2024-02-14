@@ -98,6 +98,8 @@ class RSAKeySet {
             val factory: KeyFactory = KeyFactory.getInstance("RSA")
 
             // public key
+            // 공개키의 지수는 65537로 고정됨
+            // https://stackoverflow.com/a/6098428 참고
             val publicSpec: RSAPublicKeySpec = factory.getKeySpec(publicKey, RSAPublicKeySpec::class.java)
 
             this.publicKeyModulus = publicSpec.modulus.toString(16)
