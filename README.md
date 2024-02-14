@@ -2,8 +2,8 @@
   ![Gradle test workflow](https://github.com/JoonHoSon/cliff3-library/actions/workflows/gradle_test.yml/badge.svg?branch=develop)
 * Main branch<br>
   ![Gradle test workflow](https://github.com/JoonHoSon/cliff3-library/actions/workflows/gradle_test.yml/badge.svg?branch=master)
-* Feature branch
-    * ![Gradle test workflow](https://github.com/JoonHoSon/cliff3-library/actions/workflows/gradle_test.yml/badge.svg?branch=feature/to-kolin)
+* Feature branch<br>
+  ![Gradle test workflow](https://github.com/JoonHoSon/cliff3-library/actions/workflows/gradle_test.yml/badge.svg?branch=feature/to-kolin)
 
 [//]: # (| master | develop |)
 
