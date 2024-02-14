@@ -51,9 +51,6 @@ allprojects {
 
 // 하위 프로젝트 전역 속성 정의
 subprojects {
-    group = "net.cliff3"
-    version = "0.3.0-SNAPSHOT"
-
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
 
@@ -69,6 +66,6 @@ subprojects {
 // common
 project(":common") {
     tasks.withType<Jar> {
-        archiveBaseName.set("cliff3-common-%S".format(rootProject.version))
+        archiveBaseName.set("cliff3-common")
     }
 }
