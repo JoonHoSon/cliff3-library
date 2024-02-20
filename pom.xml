@@ -54,7 +54,7 @@
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring.version>4.3.25.RELEASE</spring.version>
-        <spring.security.version>4.2.18.RELEASE</spring.security.version>
+        <spring.security.version>5.2.10.RELEASE</spring.security.version>
         <github.global.server>github</github.global.server>
         <kotlin.version>1.9.10</kotlin.version>
         <junit.version>5.10.0</junit.version>
