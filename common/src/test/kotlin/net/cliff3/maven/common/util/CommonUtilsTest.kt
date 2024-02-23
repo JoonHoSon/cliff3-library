@@ -196,11 +196,14 @@ class CommonUtilsTest {
             assertEquals("sample_1_.ico", resultName, "파일명 불일치")
 
             val reader = FileInputStream(targetFile)
-            val write = FileOutputStream(resultFile)
+            val writer = FileOutputStream(resultFile)
+            val buffer: ByteArray = ByteArray(200)
 
-            write.write(reader.readAllBytes())
+            while (reader.read(buffer) != -1) {
+                writer.write(buffer)
+            }
 
-            write.close()
+            writer.close()
             reader.close()
 
             filePath = CommonUtilsTest::class.java.getResource("/$resultName")?.toURI()
