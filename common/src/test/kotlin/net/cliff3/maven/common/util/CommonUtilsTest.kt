@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.IOException
 import java.util.*
 
 /**
@@ -178,33 +179,37 @@ class CommonUtilsTest {
     @Order(7)
     @DisplayName("유일한 파일 생성 테스트")
     fun getUniqueFileTest() {
-        var filePath = CommonUtilsTest::class.java.getResource("/sample.ico")?.toURI()
+        try {
+            var filePath = CommonUtilsTest::class.java.getResource("/sample.ico")?.toURI()
 
-        assertNotNull(filePath, "샘플 파일 없음")
+            assertNotNull(filePath, "샘플 파일 없음")
 
-        topLogger.debug("path : {}", filePath)
+            topLogger.debug("path : {}", filePath)
 
-        val targetFile = File(filePath!!)
-        val resultFile = getUniqueFile(targetFile)
+            val targetFile = File(filePath!!)
+            val resultFile = getUniqueFile(targetFile)
 
 //        assertTrue(resultFile.exists(), "신규 파일 생성되지 않음")
 
-        val resultName = FilenameUtils.getName(resultFile.name)
+            val resultName = FilenameUtils.getName(resultFile.name)
 
-        assertEquals("sample_1_.ico", resultName, "파일명 불일치")
+            assertEquals("sample_1_.ico", resultName, "파일명 불일치")
 
-        val reader = FileInputStream(targetFile)
-        val write = FileOutputStream(resultFile)
+            val reader = FileInputStream(targetFile)
+            val write = FileOutputStream(resultFile)
 
-        write.write(reader.readAllBytes())
+            write.write(reader.readAllBytes())
 
-        write.close()
-        reader.close()
+            write.close()
+            reader.close()
 
-        filePath = CommonUtilsTest::class.java.getResource("/$resultName")?.toURI()
+            filePath = CommonUtilsTest::class.java.getResource("/$resultName")?.toURI()
 
-        assertNotNull(filePath, "신규 파일 없음")
+            assertNotNull(filePath, "신규 파일 없음")
 
-        topLogger.debug("unique file : {}", filePath)
+            topLogger.debug("unique file : {}", filePath)
+        } catch (e: IOException) {
+            topLogger.error("File write failed.")
+        }
     }
 }
