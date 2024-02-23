@@ -3,4 +3,4 @@ plugins {
 }
 
 rootProject.name = "cliff3-library"
-include(":common")
+include("common", "web-common")

@@ -4,8 +4,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("java")
     id("org.jetbrains.dokka") version "1.9.10"
-//    kotlin("jvm") version "1.7.20"
-//    kotlin("plugin.spring") version "1.6.21" apply false
     alias(libs.plugins.kotlinPlugin)
 }
 
@@ -65,8 +63,14 @@ subprojects {
 }
 
 // common
-project(":common") {
+project("common") {
     tasks.withType<Jar> {
         archiveBaseName.set("cliff3-common")
+    }
+}
+
+project("web-common") {
+    tasks.withType<Jar> {
+        archiveBaseName.set("cliff3-web-common")
     }
 }
