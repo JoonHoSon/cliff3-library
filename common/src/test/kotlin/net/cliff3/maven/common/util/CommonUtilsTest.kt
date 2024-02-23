@@ -1,9 +1,12 @@
 package net.cliff3.maven.common.util
 
 import net.cliff3.maven.common.topLogger
+import org.apache.commons.io.FilenameUtils
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.util.*
 
 /**
@@ -156,7 +159,8 @@ class CommonUtilsTest {
         result = generateDirNameByDatePolicy(DirPathPolicy.DATE_POLICY_YYYY_MM_DD)
 
         assertEquals(
-            year.toString() + File.separator + month.toString().padStart(2, '0') + File.separator + day.toString().padStart(2, '0'),
+            year.toString() + File.separator + month.toString().padStart(2, '0') + File.separator + day.toString()
+                .padStart(2, '0'),
             result,
             "yyyy/mm/dd 형태 경로 불일치"
         )
@@ -168,5 +172,39 @@ class CommonUtilsTest {
         assertEquals(year.toString() + month.toString().padStart(2, '0'), result, "yyyymm 형태 경로 불일치")
 
         topLogger.debug("yyyymm => {}", result)
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("유일한 파일 생성 테스트")
+    fun getUniqueFileTest() {
+        var filePath = CommonUtilsTest::class.java.getResource("/sample.ico")?.toURI()
+
+        assertNotNull(filePath, "샘플 파일 없음")
+
+        topLogger.debug("path : {}", filePath)
+
+        val targetFile = File(filePath!!)
+        val resultFile = getUniqueFile(targetFile)
+
+//        assertTrue(resultFile.exists(), "신규 파일 생성되지 않음")
+
+        val resultName = FilenameUtils.getName(resultFile.name)
+
+        assertEquals("sample_1_.ico", resultName, "파일명 불일치")
+
+        val reader = FileInputStream(targetFile)
+        val write = FileOutputStream(resultFile)
+
+        write.write(reader.readAllBytes())
+
+        write.close()
+        reader.close()
+
+        filePath = CommonUtilsTest::class.java.getResource("/$resultName")?.toURI()
+
+        assertNotNull(filePath, "신규 파일 없음")
+
+        topLogger.debug("unique file : {}", filePath)
     }
 }

@@ -1,5 +1,6 @@
 package net.cliff3.maven.common.util
 
+import org.apache.commons.io.FilenameUtils
 import java.io.File
 import java.util.*
 
@@ -66,4 +67,30 @@ fun generateDirNameByDatePolicy(policy: DirPathPolicy, split: Boolean = true): S
     }
 
     return "$buffer"
+}
+
+/**
+ * 대상 파일을 이용하여 유일한 파일로 생성. 실제 파일이 생성되지 않는다.
+ *
+ * @param file 대상 파일
+ *
+ * @return 신규 파일
+ */
+fun getUniqueFile(file: File): File {
+    if (!file.exists()) {
+        return file
+    }
+
+    var tempFile = File(file.absolutePath)
+    val parentDir = tempFile.parentFile
+    val extension = FilenameUtils.getExtension(tempFile.name)
+    val basename = FilenameUtils.getBaseName(tempFile.name)
+    var count = 1
+
+    do {
+        tempFile = File(parentDir, basename + "_" + count++ + "_." + extension)
+
+    } while (tempFile.exists())
+
+    return tempFile
 }

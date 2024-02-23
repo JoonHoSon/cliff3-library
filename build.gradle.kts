@@ -58,6 +58,7 @@ subprojects {
         implementation(rootProject.libs.bundles.logback.bundle) // logback-core, logback-classic
         implementation(rootProject.libs.slf4j.api)
         implementation(rootProject.libs.commons.lang3)
+        implementation(rootProject.libs.commons.io)
         testImplementation(rootProject.libs.junit.jupiter)
         testImplementation(rootProject.libs.spring.test)
     }
