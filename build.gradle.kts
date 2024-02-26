@@ -63,14 +63,19 @@ subprojects {
 }
 
 // common
-project("common") {
+project(":common") {
     tasks.withType<Jar> {
         archiveBaseName.set("cliff3-common")
     }
 }
 
-project("web-common") {
+project(":web-common") {
     tasks.withType<Jar> {
         archiveBaseName.set("cliff3-web-common")
+    }
+
+    dependencies {
+        compileOnly(rootProject.libs.bundles.web.bundle)
+        implementation(project(":common"))
     }
 }
