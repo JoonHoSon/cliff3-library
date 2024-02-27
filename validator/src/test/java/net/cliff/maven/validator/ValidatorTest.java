@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import lombok.extern.slf4j.Slf4j;
 import net.cliff3.maven.validator.AtLeastCheck;
 import net.cliff3.maven.validator.CascadeNotEmpty;
 import net.cliff3.maven.validator.CellularCheck;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @author JoonHo Son
  * @since 0.3.0
  */
+@Slf4j
 @ExtendWith(SpringExtension.class)
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
