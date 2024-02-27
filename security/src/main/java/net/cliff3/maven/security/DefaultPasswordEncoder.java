@@ -1,13 +1,11 @@
 package net.cliff3.maven.security;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import net.cliff3.maven.common.util.crypto.CryptoUtil;
-import sun.misc.BASE64Encoder;
 
 /**
  * Spring security에서 사용하는 password encoder. SHA-256으로 처리.
@@ -28,8 +26,16 @@ public class DefaultPasswordEncoder implements PasswordEncoder {
         return encodedPassword.equals(encodedRawPassword);
     }
 
+    /**
+     * 전달된 문자열을 {@link CryptoUtil#makeSHA256Hash(String)}을 이용하여 암호화 한 후
+     * {@link  Base64.Encoder#encodeToString(byte[])}를 이용하여 base64 처리 후 반환
+     *
+     * @param rawPassword 평문 비밀번호
+     *
+     * @return 암호화된 결과
+     */
     private String encodePassword(CharSequence rawPassword) {
-        Optional<byte[]> result =  CryptoUtil.makeSHA256Hash(String.valueOf(rawPassword));
+        Optional<byte[]> result = CryptoUtil.makeSHA256Hash(String.valueOf(rawPassword));
 
         if (result.isPresent()) {
             return Base64.getEncoder().encodeToString(result.get());

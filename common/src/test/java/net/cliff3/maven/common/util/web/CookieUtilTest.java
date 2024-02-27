@@ -1,12 +1,11 @@
 package net.cliff3.maven.common.util.web;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -16,10 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 import net.cliff3.maven.common.util.crypto.AESCrypto;
 import net.cliff3.maven.common.util.crypto.CryptoUtil;
 import org.apache.commons.codec.binary.Base64;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 /**
  * CookieUtilTest
@@ -28,6 +32,7 @@ import org.testng.annotations.Test;
  * @since 0.1.0
  */
 @Slf4j
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class CookieUtilTest {
     @Mock
     private HttpServletRequest request;
@@ -43,15 +48,22 @@ public class CookieUtilTest {
 
     private final Charset UTF_8 = StandardCharsets.UTF_8;
 
-    private final Optional<AESCrypto> aesValue = CryptoUtil.encryptAES256(value, secret);
+    private AutoCloseable closeable;
 
-    @BeforeClass
-    public void beforeClass() {
-        MockitoAnnotations.initMocks(this);
+    @BeforeEach
+    public void beforeEach() {
+        closeable = MockitoAnnotations.openMocks(this);
     }
 
-    @Test(groups = "CookieUtilTest")
-    public void addCookieTest() throws UnsupportedEncodingException {
+    @AfterEach
+    public void afterEach() throws Exception {
+        closeable.close();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("쿠키 등록 테스트")
+    public void addCookieTest() {
         final String encryptedValue = Base64.encodeBase64URLSafeString(value.getBytes(UTF_8));
 
         Optional<Cookie> saved = CookieUtil.addCookie(response, name, value);
@@ -77,11 +89,13 @@ public class CookieUtilTest {
 
             log.debug("복호화된 쿠키값 : {}", new String(decryptResult.get(), UTF_8));
 
-            assertEquals(decryptResult.get(), value.getBytes(UTF_8), "암호화 실패");
+            assertArrayEquals(decryptResult.get(), value.getBytes(UTF_8), "암호화 실패");
         });
     }
 
     @Test
+    @Order(2)
+    @DisplayName("쿠키 조회 테스트")
     public void getCookieTest() {
         Optional<Cookie> saved = CookieUtil.addCookie(response, name, value);
 
@@ -128,12 +142,16 @@ public class CookieUtilTest {
     }
 
     @Test
+    @Order(3)
+    @DisplayName("쿠키에서 locale 정보 등록/조회 테스트")
     public void getLocaleFromCookieTest() {
         final String languageCode = "ko";
         final String countryCode = "KR";
         final String key = "savedLocale";
         final Locale enUS = new Locale("en", "US");
         Optional<Cookie> saved = CookieUtil.addCookie(response, key, String.format("%s_%s", languageCode, countryCode));
+
+        assertTrue(saved.isPresent());
 
         when(request.getCookies()).thenReturn(new Cookie[]{saved.get()});
 

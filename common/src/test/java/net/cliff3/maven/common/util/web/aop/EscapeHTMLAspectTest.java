@@ -1,21 +1,26 @@
 package net.cliff3.maven.common.util.web.aop;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.testng.Assert.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * EscapeHTMLAspectTest
@@ -25,14 +30,17 @@ import org.testng.annotations.Test;
  */
 @Slf4j
 @WebAppConfiguration
+@ExtendWith(SpringExtension.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @ContextConfiguration(locations = {"classpath:dispatcher-simple.xml", "classpath:applicationContext.xml"})
-public class EscapeHTMLAspectTest extends AbstractTestNGSpringContextTests {
+public class EscapeHTMLAspectTest {
     @Autowired
     private ApplicationContext context;
 
-    @Test(groups = {"EscapeHTMLAspectTest"})
+    @Test
+    @Order(1)
+    @DisplayName("EscapeHTML test")
     public void testEscapeHTML() throws Exception {
-        EscapeSampleDTO dto = new EscapeSampleDTO();
         MockHttpServletRequest request = new MockHttpServletRequest("POST", "/board/form");
 
         final String source = "<script>alert('abc');</script><a href=\"http://www.apple.com/kr\" target=\"_blank\">테스트</a>";

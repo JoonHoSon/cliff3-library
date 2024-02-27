@@ -1,24 +1,28 @@
 package net.cliff.maven.validator;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import lombok.extern.slf4j.Slf4j;
 import net.cliff3.maven.validator.AtLeastCheck;
 import net.cliff3.maven.validator.CascadeNotEmpty;
 import net.cliff3.maven.validator.CellularCheck;
 import net.cliff3.maven.validator.CompareValue;
 import net.cliff3.maven.validator.Insert;
 import net.cliff3.maven.validator.Update;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * ValidatorTest
@@ -26,9 +30,11 @@ import org.testng.annotations.Test;
  * @author JoonHo Son
  * @since 0.3.0
  */
-@Test(groups = "validatorTest")
+@Slf4j
+@ExtendWith(SpringExtension.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-public class ValidatorTest extends AbstractTestNGSpringContextTests {
+public class ValidatorTest {
     @Autowired
     private Validator validator;
 
@@ -36,9 +42,11 @@ public class ValidatorTest extends AbstractTestNGSpringContextTests {
      * {@link AtLeastCheck} test
      */
     @Test
+    @Order(1)
+    @DisplayName("최소 입력값 유효성 검사 테스트")
     public void atLeastTest() {
-    	// value1, value2, value3 모두 미입력
-    	SampleUserAtLeast user = new SampleUserAtLeast();
+        // value1, value2, value3 모두 미입력
+        SampleUserAtLeast user = new SampleUserAtLeast();
         Set<ConstraintViolation<Object>> violations = validator.validate(user, Insert.class);
 
         assertEquals(violations.toArray().length, 1, "최소 입력값 체크 실패(입력 안함)");
@@ -57,6 +65,8 @@ public class ValidatorTest extends AbstractTestNGSpringContextTests {
      * {@link CompareValue} test
      */
     @Test
+    @Order(2)
+    @DisplayName("비교 유효성 검사 테스트")
     public void compareValueTest() {
         SampleUserCompareValue user = new SampleUserCompareValue();
 
@@ -78,9 +88,11 @@ public class ValidatorTest extends AbstractTestNGSpringContextTests {
      * {@link CascadeNotEmpty} test
      */
     @Test
+    @Order(3)
+    @DisplayName("하위 인스턴스 유효성 검사 테스트")
     public void cascadeNotEmptyTest() {
         // field null
-    	SampleParent parent = new SampleParent();
+        SampleParent parent = new SampleParent();
         Set<ConstraintViolation<Object>> violations = validator.validate(parent, Update.class);
 
         assertEquals(violations.toArray().length, 1, "하위 객체 필드 not empty check 실패(null)");
@@ -107,6 +119,8 @@ public class ValidatorTest extends AbstractTestNGSpringContextTests {
      * {@link CellularCheck} test
      */
     @Test
+    @Order(4)
+    @DisplayName("휴대전화번호 유효성 검사 테스트")
     public void cellularCheckTest() {
         SimplePojo pojo = new SimplePojo();
         Set<ConstraintViolation<Object>> violations = validator.validate(pojo, Insert.class);
@@ -141,6 +155,8 @@ public class ValidatorTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
+    @Order(5)
+    @DisplayName("이메일 유효성 검사 테스트")
     public void emailCheckTest() {
         SimpleEmail email = new SimpleEmail();
 
@@ -167,6 +183,8 @@ public class ValidatorTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
+    @Order(6)
+    @DisplayName("URL 유효성 검사 테스트")
     public void urlCheckTest() {
         SampleUrl url = new SampleUrl();
         Set<ConstraintViolation<Object>> violations = validator.validate(url, Insert.class);
@@ -196,7 +214,8 @@ public class ValidatorTest extends AbstractTestNGSpringContextTests {
         assertEquals(violations.toArray().length, 1, "빈 문자열 형식 URL 주소 테스트 실패");
 
         // url1, url2 valid pattern
-        url.setUrl2("https://www.google.com/search?q=jsr-303+java&client=safari&rls=en&sxsrf=ALeKk038NKP01RI1K3pfl08o4KhNGVh03g:1620368991762&source=lnt&tbs=li:1&sa=X&ved=2ahUKEwjhu6Lx-LbwAhWrGKYKHSGIAQQQpwV6BAgBEDA&biw=1680&bih=917");
+        url.setUrl2(
+            "https://www.google.com/search?q=jsr-303+java&client=safari&rls=en&sxsrf=ALeKk038NKP01RI1K3pfl08o4KhNGVh03g:1620368991762&source=lnt&tbs=li:1&sa=X&ved=2ahUKEwjhu6Lx-LbwAhWrGKYKHSGIAQQQpwV6BAgBEDA&biw=1680&bih=917");
 
         violations = validator.validate(url, Insert.class, Update.class);
 

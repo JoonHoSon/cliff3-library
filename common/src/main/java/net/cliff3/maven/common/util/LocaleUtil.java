@@ -11,10 +11,8 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author JoonHo Son
  * @since 0.1.0
- * @deprecated {@link LocaleUtilsKt}로 전환
  */
 @Slf4j
-@Deprecated
 public class LocaleUtil {
     /**
      * 해당 {@link Locale} 정보의 유효성 검사. 인자로 전달되는 {@link Locale} 인스턴스는 <strong>languageCode</strong>와

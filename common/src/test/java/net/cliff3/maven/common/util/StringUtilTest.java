@@ -1,11 +1,15 @@
 package net.cliff3.maven.common.util;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * net.cliff3.maven.common.util.StringUtilTest
@@ -14,9 +18,11 @@ import org.testng.annotations.Test;
  * @since 0.1.0
  */
 @Slf4j
-@Test(groups = "stringUtilTest")
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class StringUtilTest {
     @Test
+    @Order(1)
+    @DisplayName("세자리 쉼표 테스트")
     public void addThousandSeparatorTest() {
         final String target1 = null;
         final String target2 = "abc";
@@ -41,6 +47,8 @@ public class StringUtilTest {
     }
 
     @Test
+    @Order(2)
+    @DisplayName("문자열 16진수 변환 테스트")
     public void stringToHexTest() {
         final String target1 = null;
         final String target2 = "sk489dhskdf";
@@ -70,6 +78,8 @@ public class StringUtilTest {
     }
 
     @Test
+    @Order(3)
+    @DisplayName("임의의 문자열 생성 테스트")
     public void generateRandomStringTest() {
         Optional<String> result = StringUtil.generateRandomString(-1);
 
@@ -84,6 +94,8 @@ public class StringUtilTest {
     }
 
     @Test
+    @Order(4)
+    @DisplayName("배열에서 원하는 값이 없을 경우 기본값 반환 테스트")
     public void checkValueInfDefaultListTest() {
         final String[] defaultList1 = {"a", "B", "c"};
         final String targetValue1 = "b";
@@ -127,6 +139,8 @@ public class StringUtilTest {
     }
 
     @Test
+    @Order(5)
+    @DisplayName("마스킹 테스트")
     public void maskingTest() {
         final String target = "010-1234-5678";
 
@@ -170,6 +184,8 @@ public class StringUtilTest {
     }
 
     @Test
+    @Order(6)
+    @DisplayName("초성 추출 테스트")
     public void extractInitialConsonantsTest() {
         final String target = "세종대왕(世宗大王)";
         Optional<String> result = StringUtil.extractInitialConsonants(target);
@@ -185,6 +201,8 @@ public class StringUtilTest {
     }
 
     @Test
+    @Order(7)
+    @DisplayName("자/모음 분리 테스트")
     public void separateKoreanConsonantVowelTest() {
         final String target = "한글자음모음분리많이";
         Optional<String> result = StringUtil.separateKoreanConsonantVowel(target);
