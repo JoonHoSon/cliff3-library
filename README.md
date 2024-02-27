@@ -29,4 +29,5 @@
 
 # TODO
 
-* FileExtensionValidator
+* [ ] FileExtensionValidator
+* [ ] Javadoc 추가
