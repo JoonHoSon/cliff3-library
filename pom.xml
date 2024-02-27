@@ -53,10 +53,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring.version>4.3.25.RELEASE</spring.version>
+        <spring.version>5.2.25.RELEASE</spring.version>
         <spring.security.version>4.2.18.RELEASE</spring.security.version>
         <github.global.server>github</github.global.server>
-        <kotlin.version>1.9.10</kotlin.version>
         <junit.version>5.10.0</junit.version>
     </properties>
 
@@ -97,13 +96,6 @@
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- TODO(joonho): 2023-08-25 testng 제거 -->
-            <dependency>
-                <groupId>org.testng</groupId>
-                <artifactId>testng</artifactId>
-                <version>7.4.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -151,16 +143,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>javax.el-api</artifactId>
-                <version>3.0.1-b06</version>
+                <groupId>org.glassfish.web</groupId>
+                <artifactId>el-impl</artifactId>
+                <version>2.2.1-b05</version>
                 <scope>provided</scope>
             </dependency>
-            <dependency>
-			    <groupId>org.glassfish.web</groupId>
-			    <artifactId>javax.el</artifactId>
-			    <version>2.2.6</version>
-			</dependency>
 
             <!-- apache commons -->
             <dependency>
@@ -250,12 +237,12 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>6.0.0.Alpha8</version>
+                <version>6.4.4.Final</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate.validator</groupId>
+                <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>7.0.1.Final</version>
+                <version>5.4.2.Final</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.validation</groupId>
@@ -271,21 +258,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib-jdk8</artifactId>
-                <version>${kotlin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-test</artifactId>
-                <version>${kotlin.version}</version>
-                <scope>test</scope>
-            </dependency>
-    </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>
@@ -338,32 +310,5 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-
-        <plugins>
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jvmTarget>1.8</jvmTarget>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 </project>

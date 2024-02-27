@@ -1,6 +1,6 @@
 package net.cliff3.maven.common.util.crypto;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -10,7 +10,11 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * CryptoUtilTest
@@ -19,7 +23,7 @@ import org.testng.annotations.Test;
  * @since 0.1.0
  */
 @Slf4j
-@Test(groups = "cryptoUtilTest")
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class CryptoUtilTest {
     private static final String SOURCE_KOREAN = "한글 원본 입니다.!@#%%23334!!@";
 
@@ -28,6 +32,8 @@ public class CryptoUtilTest {
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     @Test
+    @Order(1)
+    @DisplayName("SHA-256 test")
     public void testSHA256Hash() {
         Optional<byte[]> _result = CryptoUtil.makeSHA256Hash(SOURCE_KOREAN);
 
@@ -38,6 +44,8 @@ public class CryptoUtilTest {
     }
 
     @Test
+    @Order(2)
+    @DisplayName("AES-128 test")
     public void testAES128Encrypt() {
         Optional<AESCrypto> _result = CryptoUtil.encryptAES128(SOURCE_KOREAN, SECRET);
 
@@ -57,6 +65,8 @@ public class CryptoUtilTest {
     }
 
     @Test
+    @Order(3)
+    @DisplayName("AES-128 암호화 결과를 base64로 변경 테스트")
     public void testAES128EncryptByBase64() {
         Optional<AESCrypto> _result = CryptoUtil.encryptAES128(SOURCE_KOREAN, SECRET);
 
@@ -83,6 +93,8 @@ public class CryptoUtilTest {
     }
 
     @Test
+    @Order(4)
+    @DisplayName("AES-256 test")
     public void testAES256Encrypt() {
         Optional<AESCrypto> _result = CryptoUtil.encryptAES256(SOURCE_KOREAN, SECRET);
 
@@ -102,6 +114,8 @@ public class CryptoUtilTest {
     }
 
     @Test
+    @Order(5)
+    @DisplayName("AES-256 암호화 결과를 base64로 변경 테스트")
     public void testAES256EncryptByBase64() {
         Optional<AESCrypto> _result = CryptoUtil.encryptAES256(SOURCE_KOREAN, SECRET);
 
@@ -126,6 +140,8 @@ public class CryptoUtilTest {
     }
 
     @Test
+    @Order(6)
+    @DisplayName("RSA encrypt test")
     public void testRSAEncrypt() {
         KeyPair _keyPair = CryptoUtil.generateRSAKeyPair();
         Optional<byte[]> _encrypted = CryptoUtil.encryptRSA(SOURCE_KOREAN.getBytes(UTF_8),
@@ -143,6 +159,8 @@ public class CryptoUtilTest {
     }
 
     @Test
+    @Order(7)
+    @DisplayName("RSAKeySet을 이용한 복호화 테스트")
     public void testRSAWithKeySet() {
         Optional<RSAKeySet> _encrypted = CryptoUtil.encryptRSA(SOURCE_KOREAN.getBytes(UTF_8), true);
 

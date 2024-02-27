@@ -1,6 +1,6 @@
 package net.cliff3.maven.common.util.web;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
@@ -19,10 +19,15 @@ import org.springframework.web.context.WebApplicationContext;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  * NewTagTest
@@ -31,6 +36,7 @@ import org.testng.annotations.Test;
  * @since 1.0.0
  */
 @Slf4j
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @ContextConfiguration(locations = "classpath:dispatcher-simple.xml")
 public class TagTest {
     private MockPageContext newTagContext;
@@ -50,9 +56,11 @@ public class TagTest {
     @Mock
     private ServletOutputStream outputStream;
 
-    @BeforeMethod
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
+    private AutoCloseable closeable;
+
+    @BeforeEach
+    public void beforeEach() throws IOException {
+        closeable = MockitoAnnotations.openMocks(this);
 
         //
         // new tag
@@ -61,7 +69,6 @@ public class TagTest {
         newTagContext = new MockPageContext();
 
         _mockNewTagContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, newTagContext);
-
 
         newTag = new NewTag();
 
@@ -110,7 +117,14 @@ public class TagTest {
         cutStringTag.setJspContext(cutStringTagContext);
     }
 
+    @AfterEach
+    public void afterEach() throws Exception {
+        closeable.close();
+    }
+
     @Test
+    @Order(1)
+    @DisplayName("New tag, masking cut string test")
     public void successTest() throws IOException, JspException {
         //
         // new tag
@@ -148,7 +162,6 @@ public class TagTest {
 
         assertEquals(_maskingResult, _expectedMasking, "마스킹 처리 실패");
 
-
         //
         // cut string
         //
@@ -169,6 +182,8 @@ public class TagTest {
     }
 
     @Test
+    @Order(2)
+    @DisplayName("New tag, masking, cut string fail test")
     public void failTest() throws IOException, JspException {
         //
         // new tag
