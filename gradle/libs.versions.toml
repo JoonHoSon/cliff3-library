@@ -3,10 +3,12 @@ logbackVersion = "1.3.14"
 kotlinVersion = "1.9.22"
 slf4jVersion = "2.0.11"
 junitVersion = "5.10.0"
-springVersion = "5.3.31"
+springVersion = "5.3.32"
 commonsLang3Version = "3.14.0"
 commonsIOVersion = "2.15.1"
 servletApiVersion = "4.0.1"
+lucyXssVersion = "1.6.3"
+aspectJVersion = "1.9.8.M1"
 
 [plugins]
 kotlinPlugin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }
@@ -18,9 +20,12 @@ logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4jVersion" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitVersion" }
 spring-test = { group = "org.springframework", name = "spring-test", version.ref = "springVersion" }
+spring-aop = { group = "org.springframework", name = "spring-aop", version.ref = "springVersion" }
 commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commonsLang3Version" }
 commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIOVersion" }
 servlet-api = { group = "javax.servlet", name = "javax.servlet-api", version.ref = "servletApiVersion" }
+lucy-xss = { group = "com.navercorp.lucy", name = "lucy-xss", version.ref = "lucyXssVersion" }
+aspectj-weaver = { group = "org.aspectj", name = "aspectjweaver", version.ref = "aspectJVersion" }
 
 [bundles]
 logback-bundle = ["logback-core", "logback-classic"]

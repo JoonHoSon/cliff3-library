@@ -76,6 +76,10 @@ project(":web-common") {
 
     dependencies {
         compileOnly(rootProject.libs.bundles.web.bundle)
+        implementation(rootProject.libs.lucy.xss)
+        implementation(rootProject.libs.aspectj.weaver)
+        implementation(rootProject.libs.spring.test)
+        testCompileOnly(rootProject.libs.spring.aop)
         implementation(project(":common"))
     }
 }
