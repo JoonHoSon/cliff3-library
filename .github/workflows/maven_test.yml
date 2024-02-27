@@ -15,4 +15,4 @@ jobs:
             -   name: Grant execute permission for maven
                 run: chmod +x ./mvnw
             -   name: Maven test
-                run: ./mvnw test --stacktrace
+                run: ./mvnw test
