@@ -26,6 +26,14 @@ public class DefaultPasswordEncoder implements PasswordEncoder {
         return encodedPassword.equals(encodedRawPassword);
     }
 
+    /**
+     * 전달된 문자열을 {@link CryptoUtil#makeSHA256Hash(String)}을 이용하여 암호화 한 후
+     * {@link  Base64.Encoder#encodeToString(byte[])}를 이용하여 base64 처리 후 반환
+     *
+     * @param rawPassword 평문 비밀번호
+     *
+     * @return 암호화된 결과
+     */
     private String encodePassword(CharSequence rawPassword) {
         Optional<byte[]> result = CryptoUtil.makeSHA256Hash(String.valueOf(rawPassword));
 
