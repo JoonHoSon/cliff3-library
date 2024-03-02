@@ -1,6 +1,6 @@
-|                                                        master                                                         |                                                        develop                                                         |                                                                features                                                                |
-|:---------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------:|
-| ![Build Status](https://github.com/JoonHoSon/cliff3-library/actions/workflows/maven_test.yml/badge.svg?branch=master) | ![Build Status](https://github.com/JoonHoSon/cliff3-library/actions/workflows/maven_test.yml/badge.svg?branch=develop) | ![Build Status](https://github.com/JoonHoSon/cliff3-library/actions/workflows/maven_test.yml/badge.svg?branch=feature/change-to-junit) 
+|                                                        master                                                         |                                                        develop                                                         |
+|:---------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------:|
+| ![Build Status](https://github.com/JoonHoSon/cliff3-library/actions/workflows/maven_test.yml/badge.svg?branch=master) | ![Build Status](https://github.com/JoonHoSon/cliff3-library/actions/workflows/maven_test.yml/badge.svg?branch=develop) |
 
 # 참고 자료
 
