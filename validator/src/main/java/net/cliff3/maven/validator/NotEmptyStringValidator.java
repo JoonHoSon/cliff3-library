@@ -14,6 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 public class NotEmptyStringValidator implements ConstraintValidator<NotEmptyString, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return StringUtils.isNotBlank(value) && !"null".equals(value.toLowerCase().toLowerCase());
+        return StringUtils.isNotBlank(value) && !"null".equalsIgnoreCase(value);
     }
 }
