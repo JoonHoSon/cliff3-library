@@ -7,7 +7,7 @@ package net.cliff3.maven.security;
  * 에서는 이 기능을 우선으로 처리한다.
  *
  * @author JoonHo Son
- * @since 1.0.0
+ * @since 0.3.0
  */
 public interface AuthenticationCustomComparePassword {
     /**

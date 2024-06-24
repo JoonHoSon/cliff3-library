@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  *
  * @author JoonHo Son
  * @see EmailCheck
- * @since 1.0.0
+ * @since 0.3.0
  */
 public class EmailCheckValidator implements ConstraintValidator<EmailCheck, String> {
     /**

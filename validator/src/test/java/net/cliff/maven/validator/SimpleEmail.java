@@ -10,7 +10,7 @@ import net.cliff3.maven.validator.Update;
  * SimpleEmail
  *
  * @author JoonHo Son
- * @since 1.0.0
+ * @since 0.3.0
  */
 public class SimpleEmail {
     @Getter

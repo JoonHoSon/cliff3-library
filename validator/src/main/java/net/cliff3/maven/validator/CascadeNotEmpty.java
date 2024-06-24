@@ -13,12 +13,13 @@ import java.lang.annotation.Target;
  * CascadeNotEmpty
  *
  * @author JoonHo Son
- * @since 1.0.0
+ * @see CascadeNotEmptyValidator
+ * @since 0.3.0
  */
+@Documented
 @Target(value = {TYPE, ANNOTATION_TYPE, METHOD, FIELD, CONSTRUCTOR, PARAMETER})
 @Retention(value = RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CascadeNotEmptyValidator.class)
-@Documented
 public @interface CascadeNotEmpty {
     /**
      * 출력 메세지 반환

@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  *
  * @author JoonHo Son
  * @see EmailCheckValidator
- * @since 1.0.0
+ * @since 0.3.0
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

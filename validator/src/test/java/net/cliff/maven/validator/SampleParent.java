@@ -9,7 +9,7 @@ import net.cliff3.maven.validator.Update;
  * SampleParent
  *
  * @author JoonHo Son
- * @since 1.0.0
+ * @since 0.3.0
  */
 @CascadeNotEmpty.TargetList(@CascadeNotEmpty(parentField = "user",
                                              childObjectField = "value2",
