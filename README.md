@@ -10,6 +10,25 @@
 * XSS 처리<br>
   [Lucy-XSS filter](https://github.com/naver/lucy-xss-filter)
 
+* history 목록 확인<br>
+  ```shell
+  $ history -i
+  ```
+
+# Test
+
+## 개별 테스트
+
+```shell
+$ mvn -pl common test surefire-report:report-only
+```
+
+## 전체 테스트
+
+```shell
+$ mvn test surefire-report:report-only -Daggregate=true
+```
+
 # TODO
 
 * FileExtensionValidator
