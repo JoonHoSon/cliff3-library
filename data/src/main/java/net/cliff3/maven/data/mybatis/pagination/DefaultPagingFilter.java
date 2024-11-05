@@ -12,8 +12,8 @@ import java.util.Map;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import lombok.Setter;
-import net.cliff3.maven.data.mybatis.pagination.PagerTool;
-import net.cliff3.maven.data.mybatis.pagination.Pagination;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author JoonHo Son
  * @since 0.3.0
  */
+@Slf4j
 public class DefaultPagingFilter extends OncePerRequestFilter {
     /**
      * 현재 페이지번호 변수명
@@ -32,16 +33,16 @@ public class DefaultPagingFilter extends OncePerRequestFilter {
     /**
      * 페이지당 데이터 출력 건수
      */
-    private String DATA_PER_PAGE = "dataPerPage";
+    private static final String DATA_PER_PAGE = "dataPerPage";
 
-    /**
-     *
-     */
-    private String LINK_PER_PAGE = "linkPerPage";
+    // FIXME(joonho): 2024-11-05 setter 적용 필요
+    private static final String LINK_PER_PAGE = "linkPerPage";
 
-    private Integer DEFAULT_DATA_PER_PAGE = 10;
+    // FIXME(joonho): 2024-11-05 setter 적용 필요
+    private static final Integer DEFAULT_DATA_PER_PAGE = 10;
 
-    private Integer DEFAULT_PAGE_LINK_COUNT = 10;
+    // FIXME(joonho): 2024-11-05 setter 적용 필요
+    private static final Integer DEFAULT_PAGE_LINK_COUNT = 10;
 
     @Setter
     private String encoding = "UTF-8";
@@ -63,7 +64,7 @@ public class DefaultPagingFilter extends OncePerRequestFilter {
                 Pagination.currentPage.set(1);
             } else {
                 try {
-                    Pagination.currentPage.set(new Integer(currentPage));
+                    Pagination.currentPage.set(Integer.valueOf(currentPage));
                 } catch (Exception ignore) {
                     Pagination.currentPage.set(1);
                 }
@@ -73,7 +74,7 @@ public class DefaultPagingFilter extends OncePerRequestFilter {
                 Pagination.dataPerPage.set(DEFAULT_DATA_PER_PAGE);
             } else {
                 try {
-                    Pagination.dataPerPage.set(new Integer(dataPerPage));
+                    Pagination.dataPerPage.set(Integer.valueOf(dataPerPage));
                 } catch (Exception ignore) {
                     Pagination.dataPerPage.set(DEFAULT_DATA_PER_PAGE);
                 }
@@ -83,7 +84,7 @@ public class DefaultPagingFilter extends OncePerRequestFilter {
                 Pagination.linkPerPage.set(DEFAULT_PAGE_LINK_COUNT);
             } else {
                 try {
-                    Pagination.linkPerPage.set(new Integer(linkPerPage));
+                    Pagination.linkPerPage.set(Integer.valueOf(linkPerPage));
                 } catch (Exception ignore) {
                     Pagination.linkPerPage
                         .set(DEFAULT_PAGE_LINK_COUNT);
@@ -109,7 +110,7 @@ public class DefaultPagingFilter extends OncePerRequestFilter {
 
             values = entry.getValue();
 
-            if (values == null || values.length == 0) {
+            if (ArrayUtils.isEmpty(values)) {
                 continue;
             }
 
@@ -123,7 +124,7 @@ public class DefaultPagingFilter extends OncePerRequestFilter {
                         builder.append(entry.getKey()).append("=").append(URLEncoder.encode(value, encoding));
                     }
                 } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    log.error("query 추출 실패", e);
                 }
             }
         }

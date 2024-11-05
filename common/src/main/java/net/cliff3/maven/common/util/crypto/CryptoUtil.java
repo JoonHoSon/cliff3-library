@@ -56,7 +56,7 @@ public class CryptoUtil {
         RSA(Transformation.RSA_ECB_PKCS1PADDING.getTransformation());
 
         @Getter
-        private String transformation;
+        private final String transformation;
 
         Transformation(String transformation) {
             this.transformation = transformation;
