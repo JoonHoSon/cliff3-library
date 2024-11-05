@@ -3,6 +3,8 @@ package net.cliff3.maven.common.util.web.aop;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
@@ -54,7 +56,8 @@ public class EscapeHTMLAspectTest {
         MvcResult result = mockMvc.perform(post("/board/form").contentType(MediaType.APPLICATION_FORM_URLENCODED)
                                                               .param("content", source))
                                   .andReturn();
-        EscapeSampleDTO escaped = (EscapeSampleDTO)result.getModelAndView().getModelMap().get("dto");
+        EscapeSampleDTO escaped = (EscapeSampleDTO)Objects.requireNonNull(result.getModelAndView())
+                                                          .getModelMap().get("dto");
 
         assertNotNull(escaped);
         assertEquals(escaped.getContent(), expected, "escape 처리 실패");
